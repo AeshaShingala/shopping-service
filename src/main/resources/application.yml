@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    driver-class-name=com: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/shopping-service
+    username: root
+    password: password
+    init:
+      mode: always
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  mvc:
+    view:
+      prefix: /
+      suffix: .jsp
+
