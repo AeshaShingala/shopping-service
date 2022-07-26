@@ -24,17 +24,16 @@ public class Product {
     private String description;
     private boolean isAvailable;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(name = "product_colour", joinColumns = @JoinColumn(name = "productId"), inverseJoinColumns = @JoinColumn(name = "colourId"))
     private List<Colour> colours = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "products", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "products")
     private List<User> users = new ArrayList<>();
 
     @ElementCollection(targetClass = Size.class)
     @CollectionTable(name = "product_size", joinColumns = @JoinColumn(name = "productId"))
     @Enumerated(EnumType.STRING)
-    @Column(name = "size")
     private List<Size> sizes = new ArrayList<>();
 
 }

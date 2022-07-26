@@ -103,7 +103,7 @@
                         </div>
                     </div>
                 </nav>
-                <!-- <div id="header-carousel" class="carousel slide" data-ride="carousel">
+                <div id="header-carousel" class="carousel slide" data-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active" style="height: 410px;">
                             <img class="img-fluid" src="img/carousel-1.jpg" alt="Image">
@@ -136,7 +136,7 @@
                             <span class="carousel-control-next-icon mb-n2"></span>
                         </div>
                     </a>
-                </div> -->
+                </div>
             </div>
         </div>
     </div>

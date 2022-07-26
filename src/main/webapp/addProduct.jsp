@@ -25,6 +25,7 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -61,58 +62,50 @@
 			<div class="row justify-content-center">
 				<div class="col-md-8">
 					<div class="card">
-						<div class="card-header">1</div>
+						<!-- <div class="card-header"></div> -->
 						<div class="card-body">
+							<form name="my-form" enctype="multipart/form-data" action="/seller/product/add/${seller.userId}" method="post" modelAttribute="ProductsDetails">
 
-
-							<form name="my-form" enctype="multipart/form-data" action="/seller/product/add/${seller.userId}" method="post">
+                            
+                        <div id="repeat" class="card">
+                                <div class="card-header text-left "> Product 1 </div> <br>
                             <div class="form-group row">
                                 <label for="name" class="col-md-2 col-form-label text-md-right">Name</label>
                                 <div class="col-md-6">
-                                    <input required="required"  type="text" id="name"
-                                        class="form-control" name="name">
+                                    <input required="required" type="text" id="name" class="form-control" name="productDetailsList[0].name">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="description"
-                                    class="col-md-2 col-form-label text-md-right">Description</label>
+                                <label for="description" class="col-md-2 col-form-label text-md-right">Description</label>
                                 <div class="col-md-6">
-                                    <input required="required" type="text" id="description"
-                                        class="form-control" name="description">
+                                    <input required="required" type="text" id="description" class="form-control" name="productDetailsList[0].description">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="price"
-                                    class="col-md-2 col-form-label text-md-right">
-                                    Price</label>
+                                <label for="price" class="col-md-2 col-form-label text-md-right"> Price</label>
                                 <div class="col-md-6">
-                                    <input required="required" type="number" id="price"
-                                        class="form-control" name="price">
+                                    <input required="required" type="number" id="price" class="form-control" name="productDetailsList[0].price">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="image"
-                                    class="col-md-2 col-form-label text-md-right">Image</label>
+                                <label for="image" class="col-md-2 col-form-label text-md-right">Image</label>
                                 <div class="col-md-6">
-                                    <input required="required" type="file"
-                                        id="image" class="form-control" name="image">
+                                    <input required="required" type="file" id="image" class="form-control" name="productDetailsList[0].image">
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="category"
-                                    class="col-md-2 col-form-label text-md-right">Category</label>
-                                    <select name="category" >
+                                <label for="category" class="col-md-2 col-form-label text-md-right">Category</label>
+                                    <select name="productDetailsList[0].categoryId" id="categoryId">
                                         <c:forEach items="${listOfCategories}" var="category">
                                             <option value="${category.categoryId}">${category.name}</option>
                                         </c:forEach>
                                     </select>
                             </div>
                             <div class="form-group row">
-                                <label for="size"
-                                    class="col-md-2 col-form-label text-md-right">Size </label> 
+                                <label for="size" class="col-md-2 col-form-label text-md-right">Size </label> 
                                     <div class="col-md-6 spanTopMargin"> 
                                         <c:forEach items="${listOfSizes}" var="size">
-                                            <span><input type="checkbox" id="size" name="size" value="${size}">  ${size}</span> &nbsp; &nbsp;
+                                            <span><input type="checkbox" id="size" name="productDetailsList[0].size" value="${size}">  ${size}</span> &nbsp; &nbsp;
                                         </c:forEach> 
                                     </div>
                             </div>
@@ -120,18 +113,18 @@
                                 <label for="colour" class="col-md-2 col-form-label text-md-right">Colours </label>
                                     <div class="col-md-6 spanTopMargin">
                                         <c:forEach items="${listOfColour}" var="colour">
-                                            <p><input type="checkbox" id="colour" name="colour" value="${colour.name}">  ${colour.name}</p> &nbsp; &nbsp;
+                                            <p><input type="checkbox" id="colour" name="productDetailsList[0].colour" value="${colour.name}">  ${colour.name}</p> &nbsp; &nbsp;
                                         </c:forEach> 
                                     </div>
                             </div>
+                        </div>
                             <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">Add</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                                <button type="button" id="add" class="btn btn-primary">Add another product</button>
                             </div>
+                 
 							</form>
-
-
-
-						</div>
+					</div>
 					</div>
 				</div>
 			</div>
@@ -224,7 +217,83 @@
     <script src="mail/contact.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            
+            let number = 1;
+            var value=$('#id').val();
+            $("#add").click(function(e) {
+                number++;
+                value++;
+                event.preventDefault();
+                $('#repeat').append('<div id="product'+number+'">'+
+                    '<div class="card-header text-left "> Product '+number+
+                        '<button id="delete" type="button" <i class="fas fa-trash text-primary float-right mr-1"></i> Remove</button>'+
+                    '</div>'+
+                    '<br>'+
+                    '<div class="form-group row">'+
+                        '<label for="name'+ number +'" class="col-md-2 col-form-label text-md-right">Name</label>'+
+                        '<div class="col-md-6">'+
+                            '<input required="required" type="text" id="name'+ number +'" class="form-control" name="productDetailsList['+(number-1)+'].name">'+
+                       '</div>'+
+                    '</div>'+
+                    '<div class="form-group row">'+
+                        '<label for="description'+ number +'" class="col-md-2 col-form-label text-md-right">Description</label>'+
+                        '<div class="col-md-6">'+
+                            '<input required="required" type="text" id="description'+ number +'" class="form-control" name="productDetailsList['+(number-1)+'].description">'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="form-group row">'+
+                        '<label for="price'+ number +'" class="col-md-2 col-form-label text-md-right">Price</label>'+
+                        '<div class="col-md-6">'+
+                            '<input required="required" type="number" id="price'+ number +'" class="form-control" name="productDetailsList['+(number-1)+'].price">'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="form-group row">'+
+                        '<label for="image'+ number +'" class="col-md-2 col-form-label text-md-right">Image</label>'+
+                        '<div class="col-md-6">'+
+                            '<input required="required" type="file" id="image'+ number +'" class="form-control" name="productDetailsList['+(number-1)+'].image">'+
+                        '</div>'+
+                    '</div>'+
+                    '<div class="form-group row">'+
+                        '<label for="category'+ number +'" class="col-md-2 col-form-label text-md-right">Category</label>'+
+                        '<select name="productDetailsList['+(number-1)+'].categoryId" id="categoryId">'+
+                            '<c:forEach items="${listOfCategories}" var="category">'+
+                                '<option value="${category.categoryId}">${category.name}</option>'+
+                            '</c:forEach>'+
+                        '</select>'+
+                    '</div>'+
+                    '<div class="form-group row">'+
+                        '<label for="size'+ number +'" class="col-md-2 col-form-label text-md-right">Size </label>'+
+                        '<div class="col-md-6 spanTopMargin">'+ 
+                        '<c:forEach items="${listOfSizes}" var="size">'+
+                            '<span><input type="checkbox" id="size" name="productDetailsList['+(number-1)+'].size" value="${size}">  ${size}</span> &nbsp; &nbsp;'+
+                        '</c:forEach>'+ 
+                        '</div>'+
+                    '</div>'+
+                    '<div class="form-group row">'+
+                        '<label for="colour'+ number +'" class="col-md-2 col-form-label text-md-right">Colours </label>'+
+                        '<div class="col-md-6 spanTopMargin">'+
+                            '<c:forEach items="${listOfColour}" var="colour">'+
+                                '<p><input type="checkbox" id="colour'+ number +'" name="productDetailsList['+(number-1)+'].colour" value="${colour.name}">  ${colour.name}</p> &nbsp; &nbsp;'+
+                            '</c:forEach>'+
+                        '</div>'+
+                    '</div>'          			
+            );
+                    $(document).scrollTop($(document).height());
+            }
+            );
+            $('body').on('click','#delete',function(e) {
+                $("#product"+number).remove();
+                number--;
+                value--;
+            });
+            
+        });
+    </script>
+
 </body>
 
 </html>

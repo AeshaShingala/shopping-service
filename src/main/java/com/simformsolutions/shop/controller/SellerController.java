@@ -1,5 +1,10 @@
 package com.simformsolutions.shop.controller;
 
+import com.simformsolutions.shop.dto.ProductDetails;
+import com.simformsolutions.shop.dto.ProductsDetails;
+import com.simformsolutions.shop.dto.UserDetails;
+import com.simformsolutions.shop.entity.Colour;
+import com.simformsolutions.shop.entity.Product;
 import com.simformsolutions.shop.entity.Size;
 import com.simformsolutions.shop.entity.User;
 import com.simformsolutions.shop.exception.CategoryNotFoundException;
@@ -10,13 +15,12 @@ import com.simformsolutions.shop.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequestMapping("/seller")
 @Controller
@@ -33,7 +37,8 @@ public class SellerController {
 
     @GetMapping("/{id}")
     public ModelAndView showDashboard(@PathVariable("id") int sellerId) {
-        ModelAndView mv = new ModelAndView("sellerDashboard").addObject("seller", sellerService.findSellerById(sellerId));
+        ModelAndView mv = new ModelAndView("sellerDashboard");
+        mv.addObject("seller", sellerService.findSellerById(sellerId));
         mv.addObject("listOfProducts", sellerService.findAllProductsBySellerId(sellerId));
         return mv;
     }
@@ -44,8 +49,8 @@ public class SellerController {
     }
 
     @PostMapping("/signup")
-    public String addSeller(User seller) {
-        User user = sellerService.saveSeller(seller);
+    public String addSeller(UserDetails userDetails) {
+        User user = sellerService.saveSeller(userDetails);
         return "redirect:/seller/" + user.getUserId();
     }
 
@@ -91,18 +96,44 @@ public class SellerController {
         return mv;
     }
 
-    //change request params here
     @PostMapping("/product/add/{id}")
-    public String addProduct(@PathVariable("id") int sellerId, @RequestParam("name") String name, @RequestParam("description") String description,
-                             @RequestParam("price") BigDecimal price, @RequestParam("category") int categoryId, @RequestParam("image") MultipartFile image,
-                             @RequestParam("size") List<Size> size, @RequestParam("colour") List<String> colour) throws IOException, CategoryNotFoundException {
-        sellerService.saveSellingProduct(sellerId, name, description, price, categoryId, image, size, colour);
+    public String addProduct(@PathVariable("id") int sellerId, @ModelAttribute("ProductsDetails") ProductsDetails productDetails) throws IOException, CategoryNotFoundException {
+        sellerService.saveSellingProduct(sellerId, productDetails.getProductDetailsList());
         return "redirect:/seller/" + sellerId;
     }
 
-    @GetMapping("/delete/{id}")
-    public String removeProduct(@PathVariable("id") int productId) throws ProductNotFoundException {
+    @GetMapping("/product/show/{id}/{sid}")
+    public ModelAndView showProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException {
+        Product product = sellerService.findProductById(productId);
+        return new ModelAndView("showProductDetails").addObject("product", product).addObject("user", sellerService.findSellerById(sellerId)).addObject("listOfColours", product.getColours()).addObject("listOfSizes", product.getSizes());
+    }
+
+    @GetMapping("/product/delete/{id}/{sid}")
+    public String removeProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) {
         sellerService.deleteProductById(productId);
-        return "redirect:/seller/2";
+        return "redirect:/seller/" + sellerId;
+    }
+
+    @GetMapping("/product/edit/{id}/{sid}")
+    public ModelAndView editProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException {
+        ModelAndView mv = new ModelAndView("editProduct");
+        Product product = sellerService.findProductById(productId);
+
+        List<Colour> colours = colourRepository.findAll();
+        colours.removeAll(product.getColours());
+        //display only remaining sizes not all
+        List<Size> sizes = Arrays.stream(Size.values()).toList();
+
+        mv.addObject("product", product)
+                .addObject("user", sellerService.findSellerById(sellerId))
+                .addObject("listOfRemainingColour", colours)
+                .addObject("listOfSizes", sizes);
+        return mv;
+    }
+
+    @PostMapping("/product/edit/{id}/{sid}")
+    public String editProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId, @ModelAttribute("ProductDetails") ProductDetails productDetails) throws ProductNotFoundException, IOException {
+        sellerService.updateProduct(productId, productDetails);
+        return "redirect:/seller/" + sellerId;
     }
 }

@@ -1,6 +1,5 @@
 package com.simformsolutions.shop.dto;
 
-import com.simformsolutions.shop.entity.Colour;
 import com.simformsolutions.shop.entity.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,12 +14,11 @@ import java.util.List;
 @NoArgsConstructor
 public class ProductDetails {
 
-    private int sellerId;
-    private String name;
-    private String description;
-    private BigDecimal price;
     private int categoryId;
+    private String name;
+    private BigDecimal price;
+    private String description;
     private MultipartFile image;
     private List<Size> size;
-    private List<Colour> colour;
+    private List<String> colour;
 }

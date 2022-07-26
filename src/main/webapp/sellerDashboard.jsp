@@ -32,14 +32,14 @@
     <!-- Topbar Start -->
     <div class="container-fluid">
         <div class="row align-items-center py-3 px-xl-5">
-            <div class="col-lg-3 d-none d-lg-block">
+            <div class="col-lg-9 d-none d-lg-block">
                 <a href="" class="text-decoration-none">
                     <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
                 </a>
             </div>
-            <div class="col-lg-9  text-right">
-                <a href="/seller/profile/show/${seller.userId}" class="nav-item nav-link">${seller.name}</a>
+            <div class="col-lg-3  text-right d-inline-flex">
                 <a href="/seller/product/add/${seller.userId}" class="nav-item nav-link">Add Product</a>
+                <a href="/seller/profile/show/${seller.userId}" class="nav-item nav-link ">${seller.name}</a>
                 <a href="/" class="nav-item nav-link">Logout</a>
             </div>
         </div>
@@ -65,8 +65,9 @@
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between bg-light border">
-                        <a href="" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                        <a href="/seller/delete/${product.productId}" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Delete</a>
+                        <a href="/seller/product/show/${product.productId}/${seller.userId}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                        <a href="/seller/product/edit/${product.productId}/${seller.userId}" class="btn btn-sm text-dark p-0"><i class="fas fa-pen text-primary mr-1"></i>Edit</a>
+                        <a href="/seller/product/delete/${product.productId}/${seller.userId}" class="btn btn-sm text-dark p-0"><i class="fas fa-trash text-primary mr-1"></i>Delete</a>
                     </div>
                 </div>
             </div>
