@@ -1,8 +1,11 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
+    <title>EShopper - Bootstrap Shop Template</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
@@ -27,99 +30,118 @@
 <body>
     <!-- Topbar Start -->
     <div class="container-fluid">
+        <div class="row bg-secondary py-2 px-xl-5">
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-dark" href="">FAQs</a>
+                    <span class="text-muted px-2">|</span>
+                    <a class="text-dark" href="">Help</a>
+                    <span class="text-muted px-2">|</span>
+                    <a class="text-dark" href="">Support</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-dark px-2" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-dark px-2" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-dark px-2" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-dark px-2" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-dark pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="" class="text-decoration-none">
                     <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
                 </a>
             </div>
-            <div class="col-lg-9  text-right">
-                <a href="/${hasRole}/${user.userId}" class="nav-item nav-link">Home</a>
+            <div class="col-lg-6 col-6 text-left">
+                <form action="">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search for products">
+                        <div class="input-group-append">
+                            <span class="input-group-text bg-transparent text-primary">
+                                <i class="fa fa-search"></i>
+                            </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-3 col-6 text-right">
+                <a href="/buyer/cart/${user.userId}" class="btn border">
+                    <i class="fas fa-shopping-cart text-primary"></i>
+                    <span class="badge">0</span>
+                </a>
+                <a href="/buyer/profile/show/${user.userId}" class="btn border">
+                    <i class="fas fa-user-alt text-primary"></i>
+                    <span class="badge">${user.name}</span>
+                </a>
             </div>
         </div>
     </div>
     <!-- Topbar End -->
 
 
+
     <!-- Page Header Start -->
     <div class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">${user.name}</h1>
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">My Wishlist</h1>
             <div class="d-inline-flex">
-                <p class="m-0"></a>${hasRole}</p>
+                <p class="m-0"><a href="/buyer/${user.userId}">Home</a></p>
                 <p class="m-0 px-2">-</p>
-                <p class="m-0">details</p>
+                <p class="m-0">Shop</p>
             </div>
         </div>
     </div>
     <!-- Page Header End -->
 
-    <div class="cotainer">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Profile</div>
-                    <div class="card-body">
-                        <form name="my-form" action="/${hasRole}/profile/edit" method="get">
-                            <div class="form-group row">
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.userId}" type="text" id="userId"
-                                        class="form-control" name="userId" hidden>
+
+    <!-- Shop Start -->
+    <div class="container-fluid pt-5">
+        <div class="row px-xl-5">
+
+            <!-- Shop Product Start -->
+            <div class="container-fluid pt-5">
+                <div class="row px-xl-5 pb-4">
+                    <c:forEach items="${listOfProducts}" var="product">
+                        <div class="col-lg-3 col-md-6 col-sm-12 pb-1">
+                        <div class="card product-item border-0 mb-4">
+                            <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                <img class="img-fluid w-100" src="/productImages/${product.image}" alt="" style="width: 275px; height: 400px">
+                            </div>
+                            <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                <h6 class="text-truncate mb-3">${product.name}</h6>
+                                <div class="d-flex justify-content-center">
+                                    <h6>$${product.price}</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
                                 </div>
                             </div>
-                            <div class="form-group row">
-                                <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.name}" readonly type="text" id="name"
-                                        class="form-control" name="name">
-                                </div>
+                            <div class="card-footer d-flex justify-content-between bg-light border">
+                                <a href="/buyer/product/view/${product.productId}/${user.userId}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                <a href="/buyer/product/view/${product.productId}/${user.userId}" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add to Cart</a>
+                                <a href="/buyer/wishlist/remove/${product.productId}/${user.userId}" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>Remove</a>
                             </div>
-                            <div class="form-group row">
-                                <label for="email"
-                                    class="col-md-4 col-form-label text-md-right">E-Mail
-                                    Address</label>
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.email}" readonly type="email" id="email"
-                                        class="form-control" name="email">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="password"
-                                    class="col-md-4 col-form-label text-md-right">Password</label>
-                                <div class="col-md-6">
-                                    <input required="required" value= "${user.password}" readonly type="password" id="password"
-                                        class="form-control" name="password">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="address"
-                                    class="col-md-4 col-form-label text-md-right">
-                                    Address</label>
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.address}" readonly type="address" id="address"
-                                        class="form-control" name="address">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="contact"
-                                    class="col-md-4 col-form-label text-md-right">Phone
-                                    Number</label>
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.contact}" readonly maxlength="10" type="text"
-                                        id="contact" class="form-control" name="contact">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">Edit Profile</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
+                </c:forEach>
                 </div>
             </div>
+            <!-- Shop Product End -->
         </div>
     </div>
-  
+    <!-- Shop End -->
+
 
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary text-dark mt-5 pt-5">
@@ -135,7 +157,7 @@
             </div>
             <div class="col-lg-8 col-md-12">
                 <div class="row">
-                    <div class="col-md-6 mb-5">
+                    <div class="col-md-4 mb-5">
                         <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
                         <div class="d-flex flex-column justify-content-start">
                             <a class="text-dark mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Home</a>
@@ -146,7 +168,18 @@
                             <a class="text-dark" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-5">
+                    <div class="col-md-4 mb-5">
+                        <h5 class="font-weight-bold text-dark mb-4">Quick Links</h5>
+                        <div class="d-flex flex-column justify-content-start">
+                            <a class="text-dark mb-2" href="index.html"><i class="fa fa-angle-right mr-2"></i>Home</a>
+                            <a class="text-dark mb-2" href="shop.html"><i class="fa fa-angle-right mr-2"></i>Our Shop</a>
+                            <a class="text-dark mb-2" href="detail.html"><i class="fa fa-angle-right mr-2"></i>Shop Detail</a>
+                            <a class="text-dark mb-2" href="cart.html"><i class="fa fa-angle-right mr-2"></i>Shopping Cart</a>
+                            <a class="text-dark mb-2" href="checkout.html"><i class="fa fa-angle-right mr-2"></i>Checkout</a>
+                            <a class="text-dark" href="contact.html"><i class="fa fa-angle-right mr-2"></i>Contact Us</a>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-5">
                         <h5 class="font-weight-bold text-dark mb-4">Newsletter</h5>
                         <form action="">
                             <div class="form-group">

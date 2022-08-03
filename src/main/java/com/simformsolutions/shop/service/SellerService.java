@@ -7,12 +7,11 @@ import com.simformsolutions.shop.entity.Product;
 import com.simformsolutions.shop.entity.Role;
 import com.simformsolutions.shop.entity.User;
 import com.simformsolutions.shop.exception.CategoryNotFoundException;
-import com.simformsolutions.shop.exception.ProductNotFoundException;
 import com.simformsolutions.shop.exception.SellerNotFoundException;
 import com.simformsolutions.shop.repository.*;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,22 +25,23 @@ public class SellerService {
 
     ModelMapper modelMapper;
     ProductRepository productRepository;
-    UserRepository userRepository;
     RoleRepository roleRepository;
     ColourRepository colourRepository;
     CategoryRepository categoryRepository;
+    ProductService productService;
+    @Autowired
+    UserRepository userRepository;
 
-    public SellerService(ModelMapper modelMapper, UserRepository userRepository, RoleRepository roleRepository, ColourRepository colourRepository, CategoryRepository categoryRepository, ProductRepository productRepository) {
-        this.userRepository = userRepository;
+    public SellerService(ModelMapper modelMapper, ProductRepository productRepository, RoleRepository roleRepository, ColourRepository colourRepository, CategoryRepository categoryRepository, ProductService productService) {
+        this.modelMapper = modelMapper;
+        this.productRepository = productRepository;
         this.roleRepository = roleRepository;
         this.colourRepository = colourRepository;
         this.categoryRepository = categoryRepository;
-        this.productRepository = productRepository;
-        this.modelMapper = modelMapper;
+        this.productService = productService;
     }
 
     public static String uploadDirectory = System.getProperty("user.dir") + "/src/main/webapp/productImages";
-//    filePath = new ClassPathResource("").getFile().getAbsolutePath();
 
     public User userDetailsToUser(UserDetails userDetails) {
         return modelMapper.map(userDetails, User.class);
@@ -50,7 +50,7 @@ public class SellerService {
     public User saveSeller(UserDetails userDetails) {
         Role role = roleRepository.findByName("seller");
         User user = userDetailsToUser(userDetails);
-        user.setRole(role);
+        user.getRoles().add(role);
         return userRepository.save(user);
     }
 
@@ -63,16 +63,11 @@ public class SellerService {
     }
 
     public User findSellerByEmail(String email) throws SellerNotFoundException {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<User> optionalUser = userRepository.findUserByEmail(email);
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         }
         throw new SellerNotFoundException(email + "");
-    }
-
-    public User setRole(User user) {
-        user.setHasRole("seller");
-        return userRepository.save(user);
     }
 
     public User updateSeller(User user) throws SellerNotFoundException {
@@ -125,33 +120,5 @@ public class SellerService {
         if (category.isPresent())
             return category.get();
         throw new CategoryNotFoundException(id + "");
-    }
-
-    public Product findProductById(int productId) throws ProductNotFoundException {
-        Optional<Product> optionalProduct = productRepository.findById(productId);
-        if (optionalProduct.isPresent()) {
-            return optionalProduct.get();
-        }
-        throw new ProductNotFoundException(productId + "");
-    }
-
-    public void deleteProductById(int productId) {
-        productRepository.deleteById(productId);
-    }
-
-    public void updateProduct(int productId, ProductDetails productDetails) throws ProductNotFoundException, IOException {
-        Product product = findProductById(productId);
-        product.setName(productDetails.getName());
-        product.setDescription(productDetails.getDescription());
-        product.setPrice(productDetails.getPrice());
-        product.setSizes(productDetails.getSize());
-        product.setColours(productDetails.getColour().stream().map(colourRepository::findByName).toList());
-
-        String fileName = productDetails.getImage().getOriginalFilename();
-        product.setImage(fileName);
-        Path path = Paths.get(uploadDirectory, fileName);
-        Files.write(path, productDetails.getImage().getBytes());
-
-        productRepository.save(product);
     }
 }

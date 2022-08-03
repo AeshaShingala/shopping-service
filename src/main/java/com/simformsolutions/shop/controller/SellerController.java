@@ -11,6 +11,7 @@ import com.simformsolutions.shop.exception.CategoryNotFoundException;
 import com.simformsolutions.shop.exception.ProductNotFoundException;
 import com.simformsolutions.shop.repository.CategoryRepository;
 import com.simformsolutions.shop.repository.ColourRepository;
+import com.simformsolutions.shop.service.ProductService;
 import com.simformsolutions.shop.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +21,6 @@ import org.springframework.web.servlet.ModelAndView;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequestMapping("/seller")
 @Controller
@@ -34,6 +34,9 @@ public class SellerController {
 
     @Autowired
     CategoryRepository categoryRepository;
+
+    @Autowired
+    ProductService productService;
 
     @GetMapping("/{id}")
     public ModelAndView showDashboard(@PathVariable("id") int sellerId) {
@@ -61,14 +64,14 @@ public class SellerController {
 
     @PostMapping("/login")
     public String loginSeller(@RequestParam("email") String email, @RequestParam("password") String password) {
-        User seller = sellerService.setRole(sellerService.findSellerByEmail(email));
-        return "redirect:/seller/" + seller.getUserId();
+        return "redirect:/seller/" + sellerService.findSellerByEmail(email).getUserId();
     }
 
     @GetMapping("/profile/show/{id}")
     public ModelAndView showProfile(@PathVariable("id") int sellerId) {
         ModelAndView mv = new ModelAndView("showProfile");
         mv.addObject("user", sellerService.findSellerById(sellerId));
+        mv.addObject("hasRole","seller");
         return mv;
     }
 
@@ -76,6 +79,7 @@ public class SellerController {
     public ModelAndView editSeller(@RequestParam("userId") int sellerId) {
         ModelAndView mv = new ModelAndView("editProfile");
         mv.addObject("user", sellerService.findSellerById(sellerId));
+        mv.addObject("hasRole","seller");
         return mv;
     }
 
@@ -83,6 +87,7 @@ public class SellerController {
     public ModelAndView editSellerDetails(User seller) {
         ModelAndView mv = new ModelAndView("showProfile");
         mv.addObject("user", sellerService.updateSeller(seller));
+        mv.addObject("hasRole","seller");
         return mv;
     }
 
@@ -104,20 +109,20 @@ public class SellerController {
 
     @GetMapping("/product/show/{id}/{sid}")
     public ModelAndView showProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException {
-        Product product = sellerService.findProductById(productId);
-        return new ModelAndView("showProductDetails").addObject("product", product).addObject("user", sellerService.findSellerById(sellerId)).addObject("listOfColours", product.getColours()).addObject("listOfSizes", product.getSizes());
+        Product product = productService.findProductById(productId);
+        return new ModelAndView("showSellerProductDetails").addObject("product", product).addObject("user", sellerService.findSellerById(sellerId)).addObject("listOfColours", product.getColours()).addObject("listOfSizes", product.getSizes());
     }
 
     @GetMapping("/product/delete/{id}/{sid}")
     public String removeProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) {
-        sellerService.deleteProductById(productId);
+        productService.deleteProductById(productId);
         return "redirect:/seller/" + sellerId;
     }
 
     @GetMapping("/product/edit/{id}/{sid}")
     public ModelAndView editProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException {
         ModelAndView mv = new ModelAndView("editProduct");
-        Product product = sellerService.findProductById(productId);
+        Product product = productService.findProductById(productId);
 
         List<Colour> colours = colourRepository.findAll();
         colours.removeAll(product.getColours());
@@ -133,7 +138,7 @@ public class SellerController {
 
     @PostMapping("/product/edit/{id}/{sid}")
     public String editProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId, @ModelAttribute("ProductDetails") ProductDetails productDetails) throws ProductNotFoundException, IOException {
-        sellerService.updateProduct(productId, productDetails);
+        productService.updateProduct(productId, productDetails);
         return "redirect:/seller/" + sellerId;
     }
 }

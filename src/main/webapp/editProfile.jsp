@@ -8,7 +8,7 @@
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -18,7 +18,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
@@ -33,6 +33,9 @@
                     <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
                 </a>
             </div>
+            <div class="col-lg-9  text-right">
+                <a href="/${hasRole}/profile/show/${user.userId}" class="nav-item nav-link">Back</a>
+            </div>
         </div>
     </div>
     <!-- Topbar End -->
@@ -44,7 +47,7 @@
 					<div class="card">
 						<div class="card-header">${user.name}</div>
 						<div class="card-body">
-							<form name="my-form" action="/seller/profile/edit" method="post">
+							<form name="my-form" action="/${hasRole}/profile/edit" method="post">
 							<div class="form-group row">
                                 <div class="col-md-6">
                                     <input required="required" value="${user.userId}" type="text" id="userId"

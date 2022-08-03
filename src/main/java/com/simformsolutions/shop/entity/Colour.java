@@ -5,13 +5,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Colour {
 
     @Id
@@ -20,5 +19,5 @@ public class Colour {
     private String name;
 
     @ManyToMany(mappedBy = "colours", cascade = CascadeType.ALL)
-    private List<Product> products = new ArrayList<>();
+    private List<Product> products;
 }

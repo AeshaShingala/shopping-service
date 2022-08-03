@@ -11,7 +11,7 @@
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="/img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -21,7 +21,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
 
     <!-- Libraries Stylesheet -->
-    <link href="lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+    <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
@@ -89,7 +89,7 @@
                                             </div>
                                             <small class="pt-1">(50 Reviews)</small>
                                         </div>
-                                        <h3 class="font-weight-semi-bold mb-4">${product.price}</h3>
+                                        <h3 class="font-weight-semi-bold mb-4">$${product.price}</h3>
                                         <p class="mb-4">${product.description}</p>
                                         <div class="d-flex mb-3">
                                             <p class="text-dark font-weight-medium mb-0 mr-3">Sizes:</p>
@@ -112,9 +112,6 @@
                                                     </div>
                                                 </c:forEach>
                                             </form>
-                                        </div>
-                                        <div class="d-flex align-items-center mb-4 pt-2">
-                                            <button class="btn btn-primary px-3"><i class="fa fa-shopping-cart mr-1"></i> Add To Cart</button>
                                         </div>
                                         <div class="d-flex pt-2">
                                             <p class="text-dark font-weight-medium mb-0 mr-2">Share on:</p>
@@ -192,7 +189,7 @@
                                                     <div class="col-md-6">
                                                         <h4 class="mb-4">1 review for "Colorful Stylish Shirt"</h4>
                                                         <div class="media mb-4">
-                                                            <img src="img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
+                                                            <img src="/img/user.jpg" alt="Image" class="img-fluid mr-3 mt-1" style="width: 45px;">
                                                             <div class="media-body">
                                                                 <h6>John Doe<small> - <i>01 Jan 2045</i></small></h6>
                                                                 <div class="text-primary mb-2">
@@ -243,18 +240,6 @@
                                     </div>
                                 </div>
                             </div>
-
-
-
-
-
-
-
-
-                            
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary ">Edit Product</button>
-                            </div>
                         </form>
                     </div>
                 </div>
@@ -262,10 +247,6 @@
         </div>
     </div>
   
-
-
-   
-
 
     <!-- Footer Start -->
     <div class="container-fluid bg-secondary text-dark mt-5 pt-5">
@@ -319,7 +300,7 @@
                 </p>
             </div>
             <div class="col-md-6 px-xl-0 text-center text-md-right">
-                <img class="img-fluid" src="img/payments.png" alt="">
+                <img class="img-fluid" src="/img/payments.png" alt="">
             </div>
         </div>
     </div>
@@ -333,12 +314,12 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+    <script src="/mail/jqBootstrapValidation.min.js"></script>
+    <script src="/mail/contact.js"></script>
 
     <!-- Template Javascript -->
     <script src="/js/main.js"></script>
