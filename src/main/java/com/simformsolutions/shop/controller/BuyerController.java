@@ -138,13 +138,6 @@ public class BuyerController {
                 .addObject("listOfProducts", buyerService.removeProductFromWishlist(buyerId, productId));
     }
 
-    @PostMapping("/product/cart")
-    public String addProductToCart(@RequestParam("userId") int buyerId, @RequestParam("productId") int productId, @RequestParam("sizes") String size,
-                                   @RequestParam("colour") String colour) throws ProductNotFoundException {
-        buyerService.saveProductToCart(buyerId, productService.findProductById(productId), size, colour, 100);
-        return "redirect:/buyer/cart/" + buyerId;
-    }
-
     @GetMapping("/cart/{bid}")
     public ModelAndView showCart(@PathVariable("bid") int buyerId) {
         Cart cart = buyerService.findBuyerById(buyerId).getCart();
@@ -152,6 +145,13 @@ public class BuyerController {
         return new ModelAndView("cart")
                 .addObject("listOfPurchaseProducts", products)
                 .addObject("user", buyerService.findBuyerById(buyerId));
+    }
+
+    @PostMapping("/product/cart")
+    public String addProductToCart(@RequestParam("userId") int buyerId, @RequestParam("productId") int productId, @RequestParam("sizes") String size,
+                                   @RequestParam("colour") String colour, @RequestParam("quantity") String quantity) throws ProductNotFoundException {
+        buyerService.saveProductToCart(buyerId, productService.findProductById(productId), size, colour, Integer.parseInt(quantity));
+        return "redirect:/buyer/cart/" + buyerId;
     }
 
     @GetMapping("/cart/remove/{id}/{bid}")

@@ -120,7 +120,7 @@
                             <th>Size</th>
                             <th>Price</th>
                             <th>Quantity</th>
-                            <th>Total</th>
+                            <th>Subtotal</th>
                             <th>Remove</th>
                         </tr>
                     </thead>
@@ -130,24 +130,24 @@
                             <td class="align-middle"><img src="/productImages/${product.image}" alt="" style="width: 50px;"> ${product.name}</td>
                             <td class="align-middle">${product.colour}</td>
                             <td class="align-middle">${product.size}</td>
-                            <td class="align-middle">${product.price}</td>
+                            <td class="align-middle price" id="price">${product.price}</td>
                             <td class="align-middle">
                                 <div class="input-group quantity mx-auto" style="width: 100px;">
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-minus" >
+                                        <button type="button" class="btn btn-sm btn-primary btn-minus" >
                                         <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" value="${product.quantity}">
+                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" id="quantity" value="${product.quantity}" readonly>
                                     <div class="input-group-btn">
-                                        <button class="btn btn-sm btn-primary btn-plus">
+                                        <button type="button" class="btn btn-sm btn-primary btn-plus">
                                             <i class="fa fa-plus"></i>
                                         </button>
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle">${product.price} * ${product.quantity} </td>
-                            <td class="align-middle"><a href="/buyer/cart/remove/${user.userId}" ><button class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></a></td>
+                            <td class="align-middle" style="width: 100px;"><input type="text" class="form-control form-control-sm bg-secondary text-center subtotal" id="subtotal" value="${product.price * product.quantity}" readonly></td>
+                            <td class="align-middle"><a href="/buyer/cart/remove/${product.purchaseProductId}/${user.userId}" ><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></a></td>
                         </tr>
                     </c:forEach>
                     </tbody>

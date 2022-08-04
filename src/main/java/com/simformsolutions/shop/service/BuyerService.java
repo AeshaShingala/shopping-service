@@ -93,22 +93,23 @@ public class BuyerService {
     }
 
     public void saveProductToCart(int buyerId, Product product, String size, String colour, int quantity) {
-        List<PurchaseProduct> cartProducts = findBuyerById(buyerId).getCart().getCartProducts();
-
-        PurchaseProduct purchaseProduct = new PurchaseProduct();
-        purchaseProduct.setColour(colour);
-        purchaseProduct.setSize(size);
-        cartProducts.add(purchaseProduct);
-
-//        if (!cartProducts.contains(purchaseProduct)) {
-        purchaseProduct.setQuantity(quantity);
-        purchaseProductRepository.save(purchaseProduct);
-        product.getPurchaseProduct().add(purchaseProduct);
-        productRepository.save(product);
-//        }
+        Optional<PurchaseProduct> optionalPurchaseProduct = purchaseProductRepository.purchaseProduct(product.getProductId(), colour, size, findBuyerById(buyerId).getCart().getCartId());
+        if (optionalPurchaseProduct.isPresent()) {
+            PurchaseProduct purchaseProduct = optionalPurchaseProduct.get();
+            purchaseProduct.setQuantity(purchaseProduct.getQuantity() + quantity);
+            purchaseProductRepository.save(purchaseProduct);
+        } else {
+            List<PurchaseProduct> cartProducts = findBuyerById(buyerId).getCart().getCartProducts();
+            PurchaseProduct purchaseProduct = new PurchaseProduct(size, colour, quantity);
+            cartProducts.add(purchaseProduct);
+            purchaseProductRepository.save(purchaseProduct);
+            product.getPurchaseProduct().add(purchaseProduct);
+            productRepository.save(product);
+        }
     }
 
     public void removeProductFromCart(int purchaseProductId) {
-        purchaseProductRepository.delete(purchaseProductRepository.findById(purchaseProductId).orElse(null));
+        Optional<PurchaseProduct> purchaseProduct = purchaseProductRepository.findById(purchaseProductId);
+        purchaseProduct.ifPresent(product -> purchaseProductRepository.delete(product));
     }
 }

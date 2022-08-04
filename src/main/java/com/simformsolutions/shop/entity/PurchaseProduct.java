@@ -21,4 +21,10 @@ public class PurchaseProduct {
     private String size;
     private String colour;
     private int quantity;
+
+    public PurchaseProduct(String size, String colour, int quantity) {
+        this.size = size;
+        this.colour = colour;
+        this.quantity = quantity;
+    }
 }

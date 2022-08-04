@@ -3,20 +3,22 @@ package com.simformsolutions.shop.dto;
 import java.math.BigDecimal;
 
 public interface PurchaseProductDetails {
-    String getName();
-
     BigDecimal getPrice();
 
     String getImage();
 
-    int getProductId();
+    int getCartId();
 
     String getSize();
 
     String getColour();
 
+    int getProductId();
+
     int getQuantity();
 
-    int getCartId();
+    int getPurchaseProductId();
+
+    String getName();
 
 }

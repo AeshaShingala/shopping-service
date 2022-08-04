@@ -22,7 +22,7 @@ public class Product {
     private String image;
     private String description;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "product_colour", joinColumns = @JoinColumn(name = "productId"), inverseJoinColumns = @JoinColumn(name = "colourId"))
     private List<Colour> colours;
 

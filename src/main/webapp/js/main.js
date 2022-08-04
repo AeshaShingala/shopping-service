@@ -15,7 +15,7 @@
             }
         }
         toggleNavbarMethod();
-        $(window).resize(toggleNavbarMethod);
+        $(window).resize(toggleNavbarMethod);      
     });
     
     
@@ -88,6 +88,7 @@
     $('.quantity button').on('click', function () {
         var button = $(this);
         var oldValue = button.parent().parent().find('input').val();
+        var price = button.parent().parent().parent().parent().find('#price').text();
         if (button.hasClass('btn-plus')) {
             var newVal = parseFloat(oldValue) + 1;
         } else {
@@ -98,6 +99,8 @@
             }
         }
         button.parent().parent().find('input').val(newVal);
+        button.parent().parent().parent().parent().find('#subtotal').attr("value",(newVal * price).toFixed(2));
+        console.log(price);
     });
     
 })(jQuery);

@@ -67,7 +67,8 @@ public class ProductService {
         productRepository.save(product);
     }
 
-    public void deleteProductById(int productId) {
-        productRepository.deleteById(productId);
+    public void deleteProductById(int productId) throws ProductNotFoundException {
+        Product product = findProductById(productId);
+        productRepository.delete(product);
     }
 }

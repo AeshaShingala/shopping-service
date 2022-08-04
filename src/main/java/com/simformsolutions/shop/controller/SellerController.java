@@ -114,7 +114,7 @@ public class SellerController {
     }
 
     @GetMapping("/product/delete/{id}/{sid}")
-    public String removeProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) {
+    public String removeProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException {
         productService.deleteProductById(productId);
         return "redirect:/seller/" + sellerId;
     }
