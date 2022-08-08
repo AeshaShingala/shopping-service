@@ -1,14 +1,13 @@
 package com.simformsolutions.shop.controller;
 
-import com.simformsolutions.shop.dto.PurchaseProductDetails;
 import com.simformsolutions.shop.dto.UserDetails;
-import com.simformsolutions.shop.entity.Cart;
-import com.simformsolutions.shop.entity.Size;
-import com.simformsolutions.shop.entity.User;
-import com.simformsolutions.shop.entity.Wishlist;
+import com.simformsolutions.shop.entity.*;
 import com.simformsolutions.shop.exception.CategoryNotFoundException;
 import com.simformsolutions.shop.exception.ProductNotFoundException;
-import com.simformsolutions.shop.repository.*;
+import com.simformsolutions.shop.repository.CartRepository;
+import com.simformsolutions.shop.repository.CategoryRepository;
+import com.simformsolutions.shop.repository.ColourRepository;
+import com.simformsolutions.shop.repository.WishlistRepository;
 import com.simformsolutions.shop.service.BuyerService;
 import com.simformsolutions.shop.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
-import java.util.List;
 
 @Controller
 @RequestMapping("/buyer")
@@ -31,12 +29,6 @@ public class BuyerController {
     ColourRepository colourRepository;
     @Autowired
     ProductService productService;
-    @Autowired
-    WishlistRepository wishlistRepository;
-    @Autowired
-    CartRepository cartRepository;
-    @Autowired
-    PurchaseProductRepository purchaseProductRepository;
 
     @GetMapping("/{id}")
     public ModelAndView dashboard(@PathVariable("id") int buyerId) {
@@ -54,13 +46,7 @@ public class BuyerController {
     @PostMapping("/signup")
     public String addBuyer(UserDetails userDetails) {
         User user = buyerService.saveBuyer(userDetails);
-        Wishlist wishlist = new Wishlist();
-        wishlist.setBuyerWishlist(user);
-        wishlistRepository.save(wishlist);
-
-        Cart cart = new Cart();
-        cart.setBuyerCart(user);
-        cartRepository.save(cart);
+        buyerService.createWishlistAndCart(user);
         return "redirect:/buyer/" + user.getUserId();
     }
 
@@ -140,10 +126,8 @@ public class BuyerController {
 
     @GetMapping("/cart/{bid}")
     public ModelAndView showCart(@PathVariable("bid") int buyerId) {
-        Cart cart = buyerService.findBuyerById(buyerId).getCart();
-        List<PurchaseProductDetails> products = purchaseProductRepository.productsInCart(cart.getCartId());
         return new ModelAndView("cart")
-                .addObject("listOfPurchaseProducts", products)
+                .addObject("listOfPurchaseProducts", buyerService.findAllProductsInCart(buyerId))
                 .addObject("user", buyerService.findBuyerById(buyerId));
     }
 
@@ -154,10 +138,18 @@ public class BuyerController {
         return "redirect:/buyer/cart/" + buyerId;
     }
 
+
     @GetMapping("/cart/remove/{id}/{bid}")
     public String removeProductFromCart(@PathVariable("id") int purchaseProductId, @PathVariable("bid") int buyerId) {
         buyerService.removeProductFromCart(purchaseProductId);
         return "redirect:/buyer/cart/" + buyerId;
+    }
+
+    @PostMapping("/product/quantity")
+    @ResponseBody
+    public String changeQuantity(PurchaseProduct purchaseProduct) {
+        buyerService.updateQuantity(purchaseProduct.getPurchaseProductId(), purchaseProduct.getQuantity());
+        return "success";
     }
 
 }

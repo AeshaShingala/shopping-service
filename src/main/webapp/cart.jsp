@@ -135,10 +135,11 @@
                                 <div class="input-group quantity mx-auto" style="width: 100px;">
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-sm btn-primary btn-minus" >
-                                        <i class="fa fa-minus"></i>
+                                            <i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" id="quantity" value="${product.quantity}" readonly>
+                                    <input type="text" class="form-control form-control-sm bg-secondary text-center" id="qty" value="${product.quantity}" readonly>
+                                    <input type="text" value="${product.purchaseProductId}" id ="productId" hidden> 
                                     <div class="input-group-btn">
                                         <button type="button" class="btn btn-sm btn-primary btn-plus">
                                             <i class="fa fa-plus"></i>
@@ -146,7 +147,7 @@
                                     </div>
                                 </div>
                             </td>
-                            <td class="align-middle" style="width: 100px;"><input type="text" class="form-control form-control-sm bg-secondary text-center subtotal" id="subtotal" value="${product.price * product.quantity}" readonly></td>
+                            <td class="align-middle" style="width: 100px;"><input type="text" class="form-control form-control-sm bg-secondary text-center sumtotal" id="sumtotal" value="${product.price * product.quantity}" readonly></td>
                             <td class="align-middle"><a href="/buyer/cart/remove/${product.purchaseProductId}/${user.userId}" ><button type="button" class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></a></td>
                         </tr>
                     </c:forEach>
@@ -169,17 +170,17 @@
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-3 pt-1">
                             <h6 class="font-weight-medium">Subtotal</h6>
-                            <h6 class="font-weight-medium">$150</h6>
+                            <h6 class="font-weight-medium" id="subtotal"></h6>
                         </div>
                         <div class="d-flex justify-content-between">
                             <h6 class="font-weight-medium">Shipping</h6>
-                            <h6 class="font-weight-medium">$10</h6>
+                            <h6 class="font-weight-medium" id="shipping">$40</h6>
                         </div>
                     </div>
                     <div class="card-footer border-secondary bg-transparent">
                         <div class="d-flex justify-content-between mt-2">
                             <h5 class="font-weight-bold">Total</h5>
-                            <h5 class="font-weight-bold">$160</h5>
+                            <h5 class="font-weight-bold" id="total"></h5>
                         </div>
                         <button class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
                     </div>
@@ -275,7 +276,7 @@
     <script src="/mail/contact.js"></script>
 
     <!-- Template Javascript -->
-    <script src="/js/main.js"></script>
+    <script src="/js/cart.js"></script>
 </body>
 
 </html>

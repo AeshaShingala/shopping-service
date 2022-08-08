@@ -15,7 +15,10 @@
             }
         }
         toggleNavbarMethod();
-        $(window).resize(toggleNavbarMethod);
+        $('#subtotal').text('$'+calculateSubtotal());
+        var total= calculateSubtotal() + 40;
+        $('#total').text('$'+ (calculateSubtotal() + 40));
+        $(window).resize(toggleNavbarMethod);      
     });
     
     
@@ -83,11 +86,12 @@
         }
     });
 
-
     // Product Quantity
     $('.quantity button').on('click', function () {
         var button = $(this);
-        var oldValue = button.parent().parent().find('input').val();
+        var oldValue = button.parent().parent().find('#qty').val();
+        var price = button.parent().parent().parent().parent().find('#price').text();
+        var productId = button.parent().parent().find('#productId').val();
         if (button.hasClass('btn-plus')) {
             var newVal = parseFloat(oldValue) + 1;
         } else {
@@ -97,8 +101,34 @@
                 newVal = 0;
             }
         }
-        button.parent().parent().find('input').val(newVal);
+       
+        var data= {"purchaseProductId":parseInt( productId),"quantity": newVal};
+        $.ajax({
+            url: 'http://localhost:8080/buyer/product/quantity',
+            type: 'POST',
+            data: data,
+            success: function (result) {
+                button.parent().parent().find('#qty').val(newVal);
+                button.parent().parent().parent().parent().find('#sumtotal').attr("value",(newVal * price).toFixed(2));
+                $('#subtotal').text('$'+ calculateSubtotal());
+                $('#total').text('$'+ (calculateSubtotal() + 40));
+            }
+        });
+
     });
-    
+
+    function calculateSubtotal(){
+        var total = 0;
+       var listOfSumtotal =  $(".sumtotal");
+       for( var obj of listOfSumtotal)
+       {
+           console.log(obj);
+       }
+       $(".sumtotal").each(function totals() {
+        total = parseInt(total) + parseInt($(this).val());
+       })
+       return total;
+    }
+
 })(jQuery);
 

@@ -1,5 +1,6 @@
 package com.simformsolutions.shop.service;
 
+import com.simformsolutions.shop.dto.PurchaseProductDetails;
 import com.simformsolutions.shop.dto.UserDetails;
 import com.simformsolutions.shop.entity.*;
 import com.simformsolutions.shop.exception.ProductNotFoundException;
@@ -29,7 +30,8 @@ public class BuyerService {
     ProductRepository productRepository;
     @Autowired
     PurchaseProductRepository purchaseProductRepository;
-
+    @Autowired
+    CartRepository cartRepository;
 
     public User userDetailsToUser(UserDetails userDetails) {
         return modelMapper.map(userDetails, User.class);
@@ -70,6 +72,16 @@ public class BuyerService {
         throw new SellerNotFoundException(user.getUserId() + "");
     }
 
+    public void createWishlistAndCart(User user) {
+        Wishlist wishlist = new Wishlist();
+        wishlist.setBuyerWishlist(user);
+        wishlistRepository.save(wishlist);
+
+        Cart cart = new Cart();
+        cart.setBuyerCart(user);
+        cartRepository.save(cart);
+    }
+
     public void saveProductInWishlist(Product product, int buyerId) {
         Wishlist wishlist = findBuyerById(buyerId).getWishlist();
         for (Product p : wishlist.getWishlistProducts()) {
@@ -92,6 +104,10 @@ public class BuyerService {
         return findProductsInWishlist(buyerId);
     }
 
+    public List<PurchaseProductDetails> findAllProductsInCart(int buyerId) {
+        return purchaseProductRepository.productsInCart(findBuyerById(buyerId).getCart().getCartId());
+    }
+
     public void saveProductToCart(int buyerId, Product product, String size, String colour, int quantity) {
         Optional<PurchaseProduct> optionalPurchaseProduct = purchaseProductRepository.purchaseProduct(product.getProductId(), colour, size, findBuyerById(buyerId).getCart().getCartId());
         if (optionalPurchaseProduct.isPresent()) {
@@ -111,5 +127,17 @@ public class BuyerService {
     public void removeProductFromCart(int purchaseProductId) {
         Optional<PurchaseProduct> purchaseProduct = purchaseProductRepository.findById(purchaseProductId);
         purchaseProduct.ifPresent(product -> purchaseProductRepository.delete(product));
+    }
+
+    public void updateQuantity(int purchaseProductId, int quantity)
+    {
+        Optional<PurchaseProduct> optionalPurchaseProduct = purchaseProductRepository.findById(purchaseProductId);
+        if(optionalPurchaseProduct.isPresent())
+        {
+            PurchaseProduct purchaseProduct = optionalPurchaseProduct.get();
+            purchaseProduct.setQuantity(quantity);
+            purchaseProductRepository.save(purchaseProduct);
+        }
+
     }
 }
