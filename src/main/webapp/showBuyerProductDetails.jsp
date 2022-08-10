@@ -39,15 +39,19 @@
             <div class="col-lg-9 col-6 text-right">
                 <a href="/buyer/wishlist/${user.userId}" class="btn border">
                     <i class="fas fa-heart text-primary"></i>
-                    <span class="badge">0</span>
+                    <span class="badge">${wishlistSize}</span>
                 </a>
                 <a href="/buyer/cart/${user.userId}" class="btn border">
                     <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">0</span>
+                    <span class="badge">${cartSize}</span>
                 </a>
                 <a href="/buyer/profile/show/${user.userId}" class="btn border">
                     <i class="fas fa-user-alt text-primary"></i>
                     <span class="badge">${user.name}</span>
+                </a>
+                <a href="/" class="btn border">
+                    <i class="fas fa-sign-out-alt text-primary"></i>
+                    <span class="badge">Logout</span>
                 </a>
         </div>
         </div>

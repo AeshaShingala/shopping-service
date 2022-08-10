@@ -1,20 +1,22 @@
 package com.simformsolutions.shop.controller;
 
 import com.simformsolutions.shop.dto.UserDetails;
-import com.simformsolutions.shop.entity.*;
+import com.simformsolutions.shop.entity.CartProduct;
+import com.simformsolutions.shop.entity.Size;
+import com.simformsolutions.shop.entity.User;
 import com.simformsolutions.shop.exception.CategoryNotFoundException;
 import com.simformsolutions.shop.exception.ProductNotFoundException;
-import com.simformsolutions.shop.repository.CartRepository;
 import com.simformsolutions.shop.repository.CategoryRepository;
 import com.simformsolutions.shop.repository.ColourRepository;
-import com.simformsolutions.shop.repository.WishlistRepository;
 import com.simformsolutions.shop.service.BuyerService;
 import com.simformsolutions.shop.service.ProductService;
+import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 @Controller
@@ -35,7 +37,9 @@ public class BuyerController {
         return new ModelAndView("buyerDashboard")
                 .addObject("user", buyerService.findBuyerById(buyerId))
                 .addObject("listOfProducts", productService.findAllProducts())
-                .addObject("listOfCategories", categoryRepository.findAll());
+                .addObject("listOfCategories", categoryRepository.findAll())
+                .addObject("wishlistSize", buyerService.findBuyerById(buyerId).getWishlist().getWishlistProducts().size())
+                .addObject("cartSize", buyerService.findBuyerById(buyerId).getCart().getCartProducts().size());
     }
 
     @GetMapping("/signup")
@@ -92,7 +96,9 @@ public class BuyerController {
                 .addObject("user", buyerService.findBuyerById(buyerId))
                 .addObject("listOfColours", colourRepository.findAll())
                 .addObject("listOfSizes", Arrays.stream(Size.values()).toList())
-                .addObject("listOfCategories", categoryRepository.findAll());
+                .addObject("listOfCategories", categoryRepository.findAll())
+                .addObject("wishlistSize", buyerService.findBuyerById(buyerId).getWishlist().getWishlistProducts().size())
+                .addObject("cartSize", buyerService.findBuyerById(buyerId).getCart().getCartProducts().size());
     }
 
     @GetMapping("/product/view/{id}/{bid}")
@@ -101,7 +107,9 @@ public class BuyerController {
                 .addObject("user", buyerService.findBuyerById(buyerId))
                 .addObject("product", productService.findProductById(productId))
                 .addObject("listOfSizes", productService.findProductById(productId).getSizes())
-                .addObject("listOfColours", productService.findProductById(productId).getColours());
+                .addObject("listOfColours", productService.findProductById(productId).getColours())
+                .addObject("wishlistSize", buyerService.findBuyerById(buyerId).getWishlist().getWishlistProducts().size())
+                .addObject("cartSize", buyerService.findBuyerById(buyerId).getCart().getCartProducts().size());
     }
 
     @GetMapping("/product/wishlist/{id}/{bid}")
@@ -114,42 +122,65 @@ public class BuyerController {
     public ModelAndView showWishlist(@PathVariable("bid") int buyerId) {
         return new ModelAndView("wishlist")
                 .addObject("user", buyerService.findBuyerById(buyerId))
-                .addObject("listOfProducts", buyerService.findProductsInWishlist(buyerId));
+                .addObject("listOfProducts", buyerService.findProductsInWishlist(buyerId))
+                .addObject("wishlistSize", buyerService.findBuyerById(buyerId).getWishlist().getWishlistProducts().size())
+                .addObject("cartSize", buyerService.findBuyerById(buyerId).getCart().getCartProducts().size());
     }
 
     @GetMapping("/wishlist/remove/{id}/{bid}")
-    public ModelAndView deleteProductFromWishlist(@PathVariable("id") int productId, @PathVariable("bid") int buyerId) throws ProductNotFoundException {
-        return new ModelAndView("wishlist")
-                .addObject("user", buyerService.findBuyerById(buyerId))
-                .addObject("listOfProducts", buyerService.removeProductFromWishlist(buyerId, productId));
+    public String removeProductFromWishlist(@PathVariable("id") int productId, @PathVariable("bid") int buyerId) throws ProductNotFoundException {
+        buyerService.removeProductFromWishlist(buyerId, productId);
+        return "redirect:/buyer/wishlist/" + buyerId;
     }
 
     @GetMapping("/cart/{bid}")
     public ModelAndView showCart(@PathVariable("bid") int buyerId) {
         return new ModelAndView("cart")
-                .addObject("listOfPurchaseProducts", buyerService.findAllProductsInCart(buyerId))
-                .addObject("user", buyerService.findBuyerById(buyerId));
+                .addObject("listOfCartProducts", buyerService.findAllProductsInCart(buyerId))
+                .addObject("user", buyerService.findBuyerById(buyerId))
+                .addObject("wishlistSize", buyerService.findBuyerById(buyerId).getWishlist().getWishlistProducts().size())
+                .addObject("cartSize", buyerService.findBuyerById(buyerId).getCart().getCartProducts().size());
     }
 
     @PostMapping("/product/cart")
-    public String addProductToCart(@RequestParam("userId") int buyerId, @RequestParam("productId") int productId, @RequestParam("sizes") String size,
-                                   @RequestParam("colour") String colour, @RequestParam("quantity") String quantity) throws ProductNotFoundException {
+    public String addProductToCart(@RequestParam("userId") int buyerId, @RequestParam("productId") int productId, @RequestParam("sizes") String size, @RequestParam("colour") String colour, @RequestParam("quantity") String quantity) throws ProductNotFoundException {
         buyerService.saveProductToCart(buyerId, productService.findProductById(productId), size, colour, Integer.parseInt(quantity));
         return "redirect:/buyer/cart/" + buyerId;
     }
 
-
     @GetMapping("/cart/remove/{id}/{bid}")
-    public String removeProductFromCart(@PathVariable("id") int purchaseProductId, @PathVariable("bid") int buyerId) {
-        buyerService.removeProductFromCart(purchaseProductId);
+    public String removeProductFromCart(@PathVariable("id") int cartProductId, @PathVariable("bid") int buyerId) {
+        buyerService.removeProductFromCart(cartProductId);
         return "redirect:/buyer/cart/" + buyerId;
     }
 
     @PostMapping("/product/quantity")
     @ResponseBody
-    public String changeQuantity(PurchaseProduct purchaseProduct) {
-        buyerService.updateQuantity(purchaseProduct.getPurchaseProductId(), purchaseProduct.getQuantity());
+    public String changeQuantity(CartProduct cartProduct) {
+        buyerService.updateQuantity(cartProduct.getCartProductId(), cartProduct.getQuantity());
         return "success";
+    }
+
+    @GetMapping("/order/{bid}")
+    public ModelAndView checkout(@PathVariable("bid") int buyerId, @RequestParam("subtotal") String subtotal, @RequestParam("shipping") String shipping, @RequestParam("total") String total) {
+        return new ModelAndView("checkout")
+                .addObject("user", buyerService.findBuyerById(buyerId))
+                .addObject("listOfProducts", buyerService.findAllProductsInCart(buyerId))
+                .addObject("subtotal", subtotal).addObject("shipping", shipping)
+                .addObject("total", total)
+                .addObject("wishlistSize", buyerService.findBuyerById(buyerId).getWishlist().getWishlistProducts().size())
+                .addObject("cartSize", buyerService.findBuyerById(buyerId).getCart().getCartProducts().size());
+    }
+
+    @PostMapping("/order/{bid}")
+    public String placeOrder(@PathVariable("bid") int buyerId, @RequestParam("total") String amount, @RequestParam("address") String shippingAddress) throws JRException {
+        buyerService.updateCart(buyerId, shippingAddress, BigDecimal.valueOf(Long.parseLong(amount.substring(1))));
+        return "redirect:/buyer/" + buyerId;
+    }
+
+    @GetMapping("/order/history")
+    public String showOrderHistory() {
+        return "";
     }
 
 }

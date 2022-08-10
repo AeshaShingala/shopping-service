@@ -13,16 +13,16 @@ import javax.persistence.Id;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PurchaseProduct {
+public class CartProduct {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int purchaseProductId;
+    private int cartProductId;
     private String size;
     private String colour;
     private int quantity;
 
-    public PurchaseProduct(String size, String colour, int quantity) {
+    public CartProduct(String size, String colour, int quantity) {
         this.size = size;
         this.colour = colour;
         this.quantity = quantity;

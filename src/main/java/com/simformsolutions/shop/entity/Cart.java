@@ -19,7 +19,7 @@ public class Cart {
     @JoinColumn(name = "userId", referencedColumnName = "userId")
     private User buyerCart;
 
-    @OneToMany(targetEntity = PurchaseProduct.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CartProduct.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "cartId", referencedColumnName = "cartId")
-    private List<PurchaseProduct> cartProducts;
+    private List<CartProduct> cartProducts;
 }

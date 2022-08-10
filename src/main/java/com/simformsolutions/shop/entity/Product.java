@@ -37,8 +37,8 @@ public class Product {
     @Enumerated(EnumType.STRING)
     private List<Size> sizes;
 
-    @OneToMany(targetEntity = PurchaseProduct.class, cascade = CascadeType.ALL)
+    @OneToMany(targetEntity = CartProduct.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "productId", referencedColumnName = "productId")
-    private List<PurchaseProduct> purchaseProduct;
+    private List<CartProduct> cartProduct;
 
 }

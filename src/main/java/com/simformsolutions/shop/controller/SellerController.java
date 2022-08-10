@@ -71,7 +71,7 @@ public class SellerController {
     public ModelAndView showProfile(@PathVariable("id") int sellerId) {
         ModelAndView mv = new ModelAndView("showProfile");
         mv.addObject("user", sellerService.findSellerById(sellerId));
-        mv.addObject("hasRole","seller");
+        mv.addObject("hasRole", "seller");
         return mv;
     }
 
@@ -79,7 +79,7 @@ public class SellerController {
     public ModelAndView editSeller(@RequestParam("userId") int sellerId) {
         ModelAndView mv = new ModelAndView("editProfile");
         mv.addObject("user", sellerService.findSellerById(sellerId));
-        mv.addObject("hasRole","seller");
+        mv.addObject("hasRole", "seller");
         return mv;
     }
 
@@ -87,7 +87,7 @@ public class SellerController {
     public ModelAndView editSellerDetails(User seller) {
         ModelAndView mv = new ModelAndView("showProfile");
         mv.addObject("user", sellerService.updateSeller(seller));
-        mv.addObject("hasRole","seller");
+        mv.addObject("hasRole", "seller");
         return mv;
     }
 

@@ -2,7 +2,7 @@ package com.simformsolutions.shop.dto;
 
 import java.math.BigDecimal;
 
-public interface PurchaseProductDetails {
+public interface CartProductDetails {
     BigDecimal getPrice();
 
     String getImage();
@@ -17,7 +17,7 @@ public interface PurchaseProductDetails {
 
     int getQuantity();
 
-    int getPurchaseProductId();
+    int getCartProductId();
 
     String getName();
 

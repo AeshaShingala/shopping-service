@@ -42,7 +42,7 @@ public class User {
 
     @OneToMany(targetEntity = Purchase.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "userId", referencedColumnName = "userId")
-    private List<Purchase> purchases;
+    private List<Purchase> purchases = new ArrayList<>();
 
     public void setProduct(Product product) {
         this.products.add(product);

@@ -1,17 +1,22 @@
 package com.simformsolutions.shop.service;
 
-import com.simformsolutions.shop.dto.PurchaseProductDetails;
+import com.simformsolutions.shop.dto.CartProductDetails;
+import com.simformsolutions.shop.dto.PurchaseDetails;
 import com.simformsolutions.shop.dto.UserDetails;
 import com.simformsolutions.shop.entity.*;
 import com.simformsolutions.shop.exception.ProductNotFoundException;
 import com.simformsolutions.shop.exception.SellerNotFoundException;
 import com.simformsolutions.shop.repository.*;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.*;
 
 @Service
 public class BuyerService {
@@ -29,9 +34,23 @@ public class BuyerService {
     @Autowired
     ProductRepository productRepository;
     @Autowired
-    PurchaseProductRepository purchaseProductRepository;
+    CartProductRepository cartProductRepository;
     @Autowired
     CartRepository cartRepository;
+
+    @Autowired
+    PurchaseRepository purchaseRepository;
+
+    static String filePath;
+    static String filename = System.getProperty("user.dir") + "/src/main/webapp/invoices";
+
+    static {
+        try {
+            filePath = new ClassPathResource("").getFile().getAbsolutePath();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public User userDetailsToUser(UserDetails userDetails) {
         return modelMapper.map(userDetails, User.class);
@@ -97,47 +116,76 @@ public class BuyerService {
         return buyer.getWishlist().getWishlistProducts();
     }
 
-    public List<Product> removeProductFromWishlist(int buyerId, int productId) throws ProductNotFoundException {
+    public void removeProductFromWishlist(int buyerId, int productId) throws ProductNotFoundException {
         Wishlist wishlist = findBuyerById(buyerId).getWishlist();
         wishlist.getWishlistProducts().remove(productService.findProductById(productId));
         wishlistRepository.save(wishlist);
-        return findProductsInWishlist(buyerId);
     }
 
-    public List<PurchaseProductDetails> findAllProductsInCart(int buyerId) {
-        return purchaseProductRepository.productsInCart(findBuyerById(buyerId).getCart().getCartId());
+    public List<CartProductDetails> findAllProductsInCart(int buyerId) {
+        return cartProductRepository.allProductsInCart(findBuyerById(buyerId).getCart().getCartId());
     }
 
     public void saveProductToCart(int buyerId, Product product, String size, String colour, int quantity) {
-        Optional<PurchaseProduct> optionalPurchaseProduct = purchaseProductRepository.purchaseProduct(product.getProductId(), colour, size, findBuyerById(buyerId).getCart().getCartId());
-        if (optionalPurchaseProduct.isPresent()) {
-            PurchaseProduct purchaseProduct = optionalPurchaseProduct.get();
-            purchaseProduct.setQuantity(purchaseProduct.getQuantity() + quantity);
-            purchaseProductRepository.save(purchaseProduct);
+        Optional<CartProduct> optionalCartProduct = cartProductRepository.findProductInCart(product.getProductId(), colour, size, findBuyerById(buyerId).getCart().getCartId());
+        if (optionalCartProduct.isPresent()) {
+            CartProduct cartProduct = optionalCartProduct.get();
+            cartProduct.setQuantity(cartProduct.getQuantity() + quantity);
+            cartProductRepository.save(cartProduct);
         } else {
-            List<PurchaseProduct> cartProducts = findBuyerById(buyerId).getCart().getCartProducts();
-            PurchaseProduct purchaseProduct = new PurchaseProduct(size, colour, quantity);
-            cartProducts.add(purchaseProduct);
-            purchaseProductRepository.save(purchaseProduct);
-            product.getPurchaseProduct().add(purchaseProduct);
+            List<CartProduct> cartProducts = findBuyerById(buyerId).getCart().getCartProducts();
+            CartProduct cartProduct = new CartProduct(size, colour, quantity);
+            cartProducts.add(cartProduct);
+            cartProductRepository.save(cartProduct);
+            product.getCartProduct().add(cartProduct);
             productRepository.save(product);
         }
     }
 
-    public void removeProductFromCart(int purchaseProductId) {
-        Optional<PurchaseProduct> purchaseProduct = purchaseProductRepository.findById(purchaseProductId);
-        purchaseProduct.ifPresent(product -> purchaseProductRepository.delete(product));
+    public void removeProductFromCart(int cartProductId) {
+        Optional<CartProduct> cartProduct = cartProductRepository.findById(cartProductId);
+        cartProduct.ifPresent(product -> cartProductRepository.delete(product));
     }
 
-    public void updateQuantity(int purchaseProductId, int quantity)
-    {
-        Optional<PurchaseProduct> optionalPurchaseProduct = purchaseProductRepository.findById(purchaseProductId);
-        if(optionalPurchaseProduct.isPresent())
-        {
-            PurchaseProduct purchaseProduct = optionalPurchaseProduct.get();
-            purchaseProduct.setQuantity(quantity);
-            purchaseProductRepository.save(purchaseProduct);
+    public void updateQuantity(int cartProductId, int quantity) {
+        Optional<CartProduct> optionalCartProduct = cartProductRepository.findById(cartProductId);
+        if (optionalCartProduct.isPresent()) {
+            CartProduct cartProduct = optionalCartProduct.get();
+            cartProduct.setQuantity(quantity);
+            cartProductRepository.save(cartProduct);
         }
-
     }
+
+    public void generateInvoice(int buyerId, String shippingAddress, Purchase purchase, BigDecimal amount) throws JRException {
+        User buyer = findBuyerById(buyerId);
+
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("billingAddress", buyer.getAddress());
+        parameters.put("shippingAddress", shippingAddress);
+        parameters.put("purchaseId", purchase.getPurchaseId());
+        parameters.put("amount", amount);
+        parameters.put("date", new Date());
+
+        List<PurchaseDetails> cartProductList = purchaseRepository.purchaseDetails(buyer.getCart().getCartId());
+        JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(cartProductList);
+        JasperReport jasperReport = JasperCompileManager.compileReport(filePath + "/orderInvoice.jrxml");
+        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, jrBeanCollectionDataSource);
+        JasperExportManager.exportReportToPdfFile(jasperPrint, filename + "/" + buyer.getName() + "" + purchase.getPurchaseId() + ".pdf");
+        purchase.setInvoice(JasperExportManager.exportReportToPdf(jasperPrint));
+    }
+
+    public void updateCart(int buyerId, String shippingAddress, BigDecimal amount) throws JRException {
+        User user = findBuyerById(buyerId);
+        Purchase purchase = new Purchase();
+        purchase.setShippingAddress(shippingAddress);
+        purchase.setAmount(amount);
+        purchase.addPurchasedProducts(user.getCart().getCartProducts());
+        user.getPurchases().add(purchaseRepository.save(purchase));
+
+        generateInvoice(buyerId, shippingAddress, purchase, amount);
+
+        user.getCart().getCartProducts().clear();
+        userRepository.save(user);
+    }
+
 }

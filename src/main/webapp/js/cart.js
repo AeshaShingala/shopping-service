@@ -15,9 +15,8 @@
             }
         }
         toggleNavbarMethod();
-        $('#subtotal').text('$'+calculateSubtotal());
-        var total= calculateSubtotal() + 40;
-        $('#total').text('$'+ (calculateSubtotal() + 40));
+        $('#subtotal').val('$'+calculateSubtotal());
+        $('#total').val('$'+ (calculateSubtotal() + 40));
         $(window).resize(toggleNavbarMethod);      
     });
     
@@ -102,7 +101,7 @@
             }
         }
        
-        var data= {"purchaseProductId":parseInt( productId),"quantity": newVal};
+        var data= {"cartProductId":parseInt( productId),"quantity": newVal};
         $.ajax({
             url: 'http://localhost:8080/buyer/product/quantity',
             type: 'POST',
@@ -110,8 +109,9 @@
             success: function (result) {
                 button.parent().parent().find('#qty').val(newVal);
                 button.parent().parent().parent().parent().find('#sumtotal').attr("value",(newVal * price).toFixed(2));
-                $('#subtotal').text('$'+ calculateSubtotal());
-                $('#total').text('$'+ (calculateSubtotal() + 40));
+                console.log(calculateSubtotal());
+                $('#subtotal').val('$'+ calculateSubtotal());
+                $('#total').val('$'+ (calculateSubtotal() + 40));
             }
         });
 
@@ -119,11 +119,6 @@
 
     function calculateSubtotal(){
         var total = 0;
-       var listOfSumtotal =  $(".sumtotal");
-       for( var obj of listOfSumtotal)
-       {
-           console.log(obj);
-       }
        $(".sumtotal").each(function totals() {
         total = parseInt(total) + parseInt($(this).val());
        })
