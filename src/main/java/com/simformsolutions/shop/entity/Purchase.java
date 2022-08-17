@@ -1,6 +1,7 @@
 package com.simformsolutions.shop.entity;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -20,6 +21,10 @@ public class Purchase {
     private int purchaseId;
     @Lob
     private byte[] invoice;
+
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String invoiceName;
     private String shippingAddress;
     private BigDecimal amount;
 

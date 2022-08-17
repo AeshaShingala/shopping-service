@@ -22,14 +22,14 @@ public class Product {
     private String image;
     private String description;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "product_colour", joinColumns = @JoinColumn(name = "productId"), inverseJoinColumns = @JoinColumn(name = "colourId"))
     private List<Colour> colours;
 
-    @ManyToMany(mappedBy = "products",cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "products")
     private List<User> users;
 
-    @ManyToMany(mappedBy = "wishlistProducts",cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "wishlistProducts")
     private List<Wishlist> wishlist;
 
     @ElementCollection(targetClass = Size.class)

@@ -18,6 +18,6 @@ public class Colour {
     private int colourId;
     private String name;
 
-    @ManyToMany(mappedBy = "colours", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "colours")
     private List<Product> products;
 }

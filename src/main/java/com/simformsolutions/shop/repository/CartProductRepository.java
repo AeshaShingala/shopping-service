@@ -32,5 +32,4 @@ public interface CartProductRepository extends JpaRepository<CartProduct, Intege
             "ON c.cart_id=p.cart_id " +
             "WHERE p.product_id=?1 AND p.colour=?2 AND p.size=?3 AND c.cart_id=?4", nativeQuery = true)
     Optional<CartProduct> findProductInCart(int productId, String colour, String size, int cartId);
-
 }

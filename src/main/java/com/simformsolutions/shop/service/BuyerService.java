@@ -11,12 +11,13 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
+
+import static com.simformsolutions.shop.constants.ReportConstants.*;
+
 
 @Service
 public class BuyerService {
@@ -26,11 +27,7 @@ public class BuyerService {
     @Autowired
     RoleRepository roleRepository;
     @Autowired
-    ModelMapper modelMapper;
-    @Autowired
     WishlistRepository wishlistRepository;
-    @Autowired
-    ProductService productService;
     @Autowired
     ProductRepository productRepository;
     @Autowired
@@ -40,17 +37,10 @@ public class BuyerService {
 
     @Autowired
     PurchaseRepository purchaseRepository;
-
-    static String filePath;
-    static String filename = System.getProperty("user.dir") + "/src/main/webapp/invoices";
-
-    static {
-        try {
-            filePath = new ClassPathResource("").getFile().getAbsolutePath();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    @Autowired
+    ProductService productService;
+    @Autowired
+    ModelMapper modelMapper;
 
     public User userDetailsToUser(UserDetails userDetails) {
         return modelMapper.map(userDetails, User.class);
@@ -160,25 +150,26 @@ public class BuyerService {
         User buyer = findBuyerById(buyerId);
 
         Map<String, Object> parameters = new HashMap<>();
-        parameters.put("billingAddress", buyer.getAddress());
-        parameters.put("shippingAddress", shippingAddress);
-        parameters.put("purchaseId", purchase.getPurchaseId());
-        parameters.put("amount", amount);
-        parameters.put("date", new Date());
+        parameters.put(BILLING_ADDRESS, buyer.getAddress());
+        parameters.put(SHIPPING_ADDRESS, shippingAddress);
+        parameters.put(INVOICE_NAME, purchase.getInvoiceName().substring(0, 10));
+        parameters.put(AMOUNT, amount);
+        parameters.put(DATE, new Date());
 
         List<PurchaseDetails> cartProductList = purchaseRepository.purchaseDetails(buyer.getCart().getCartId());
         JRBeanCollectionDataSource jrBeanCollectionDataSource = new JRBeanCollectionDataSource(cartProductList);
-        JasperReport jasperReport = JasperCompileManager.compileReport(filePath + "/orderInvoice.jrxml");
+        JasperReport jasperReport = JasperCompileManager.compileReport(INVOICE_FILEPATH);
         JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, jrBeanCollectionDataSource);
-        JasperExportManager.exportReportToPdfFile(jasperPrint, filename + "/" + buyer.getName() + "" + purchase.getPurchaseId() + ".pdf");
+        JasperExportManager.exportReportToPdfFile(jasperPrint, INVOICE_FILENAME + "/" + buyer.getName() + "" + purchase.getPurchaseId() + ".pdf");
         purchase.setInvoice(JasperExportManager.exportReportToPdf(jasperPrint));
     }
 
-    public void updateCart(int buyerId, String shippingAddress, BigDecimal amount) throws JRException {
+    public String updateCart(int buyerId, String shippingAddress, BigDecimal amount) throws JRException {
         User user = findBuyerById(buyerId);
         Purchase purchase = new Purchase();
         purchase.setShippingAddress(shippingAddress);
         purchase.setAmount(amount);
+        purchase.setInvoiceName(UUID.randomUUID().toString());
         purchase.addPurchasedProducts(user.getCart().getCartProducts());
         user.getPurchases().add(purchaseRepository.save(purchase));
 
@@ -186,6 +177,14 @@ public class BuyerService {
 
         user.getCart().getCartProducts().clear();
         userRepository.save(user);
+        return INVOICE_URL.path(String.valueOf(purchase.getInvoiceName())).toUriString();
     }
 
+    public List<Purchase> findOrderHistory(int buyerId) {
+        return findBuyerById(buyerId).getPurchases();
+    }
+
+    public List<CartProductDetails> showOrder(int purchaseId) {
+        return purchaseRepository.allPurchaseProducts(purchaseId);
+    }
 }

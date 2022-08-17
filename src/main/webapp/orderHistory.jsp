@@ -1,3 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,9 +35,9 @@
                 <a href="" class="text-decoration-none">
                     <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
                 </a>
-            </div> 
-            <div class="col-lg-9 text-right">
-                <a href="/${hasRole}/${user.userId}" class="nav-item nav-link">Home</a>
+            </div>
+            <div class="col-lg-9  text-right">
+                <a href="/buyer/${user.userId}" class="nav-item nav-link">Home</a>
             </div>
         </div>
     </div>
@@ -46,9 +49,9 @@
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">${user.name}</h1>
             <div class="d-inline-flex">
-                <p class="m-0"></a>${hasRole}</p>
+                <p class="m-0"></a>Purchase</p>
                 <p class="m-0 px-2">-</p>
-                <p class="m-0">details</p>
+                <p class="m-0">History</p>
             </div>
         </div>
     </div>
@@ -58,63 +61,24 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card">
-                    <div class="card-header">Profile</div>
-                    <div class="card-body">
-                        <form name="my-form" action="/${hasRole}/profile/edit" method="get">
-                            <div class="form-group row">
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.userId}" type="text" id="userId"
-                                        class="form-control" name="userId" hidden>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.name}" readonly type="text" id="name"
-                                        class="form-control" name="name">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="email"
-                                    class="col-md-4 col-form-label text-md-right">E-Mail
-                                    Address</label>
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.email}" readonly type="email" id="email"
-                                        class="form-control" name="email">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="password"
-                                    class="col-md-4 col-form-label text-md-right">Password</label>
-                                <div class="col-md-6">
-                                    <input required="required" value= "${user.password}" readonly type="password" id="password"
-                                        class="form-control" name="password">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="address"
-                                    class="col-md-4 col-form-label text-md-right">
-                                    Address</label>
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.address}" readonly type="address" id="address"
-                                        class="form-control" name="address">
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <label for="contact"
-                                    class="col-md-4 col-form-label text-md-right">Phone
-                                    Number</label>
-                                <div class="col-md-6">
-                                    <input required="required" value="${user.contact}" readonly maxlength="10" type="text"
-                                        id="contact" class="form-control" name="contact">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">Edit Profile</button>
-                            </div>
-                        </form>
-                    </div>
+                    <table class="table table-bordered text-center mb-0">
+                        <thead class="bg-secondary text-dark">
+                            <tr>
+                                <th>Invoice Id</th>
+                                <th>Invoice</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody class="align-middle">
+                            <c:forEach items="${purchases}" var="purchase">
+                                <tr>
+                                    <td class="align-middle">${purchase.purchaseId}</td>
+                                    <td class="align-middle"> <a class="btn btn-primary" href="/buyer/invoice/${user.userId}/${purchase.purchaseId}">order details</a> </td>
+                                    <td class="align-middle">${purchase.amount}</td>
+                                </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

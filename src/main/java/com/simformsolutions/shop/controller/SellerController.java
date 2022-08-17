@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -110,7 +111,12 @@ public class SellerController {
     @GetMapping("/product/show/{id}/{sid}")
     public ModelAndView showProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException {
         Product product = productService.findProductById(productId);
-        return new ModelAndView("showSellerProductDetails").addObject("product", product).addObject("user", sellerService.findSellerById(sellerId)).addObject("listOfColours", product.getColours()).addObject("listOfSizes", product.getSizes());
+        User user = sellerService.findSellerById(sellerId);
+        return new ModelAndView("showSellerProductDetails")
+                .addObject("product", product)
+                .addObject("user", user)
+                .addObject("listOfColours", product.getColours())
+                .addObject("listOfSizes", product.getSizes());
     }
 
     @GetMapping("/product/delete/{id}/{sid}")
@@ -121,23 +127,22 @@ public class SellerController {
 
     @GetMapping("/product/edit/{id}/{sid}")
     public ModelAndView editProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException {
-        ModelAndView mv = new ModelAndView("editProduct");
-        Product product = productService.findProductById(productId);
 
+        Product product = productService.findProductById(productId);
         List<Colour> colours = colourRepository.findAll();
         colours.removeAll(product.getColours());
-        //display only remaining sizes not all
-        List<Size> sizes = Arrays.stream(Size.values()).toList();
+        List<Size> sizes = new java.util.ArrayList<>(Arrays.stream(Size.values()).toList());
+        sizes.removeAll(product.getSizes());
 
-        mv.addObject("product", product)
+        return new ModelAndView("editProduct")
+                .addObject("product", product)
                 .addObject("user", sellerService.findSellerById(sellerId))
                 .addObject("listOfRemainingColour", colours)
                 .addObject("listOfSizes", sizes);
-        return mv;
     }
 
     @PostMapping("/product/edit/{id}/{sid}")
-    public String editProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId, @ModelAttribute("ProductDetails") ProductDetails productDetails) throws ProductNotFoundException, IOException {
+    public String editProduct(@ModelAttribute("ProductDetails") ProductDetails productDetails, @PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException, IOException {
         productService.updateProduct(productId, productDetails);
         return "redirect:/seller/" + sellerId;
     }

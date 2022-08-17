@@ -18,6 +18,8 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
+import static com.simformsolutions.shop.constants.ReportConstants.PRODUCT_FILEPATH;
+
 @Service
 public class ProductService {
 
@@ -28,8 +30,6 @@ public class ProductService {
 
     @Autowired
     CategoryRepository categoryRepository;
-
-    public static String uploadDirectory = System.getProperty("user.dir") + "/src/main/webapp/productImages";
 
     public Product findProductById(int productId) throws ProductNotFoundException {
         Optional<Product> optionalProduct = productRepository.findById(productId);
@@ -61,7 +61,7 @@ public class ProductService {
 
         String fileName = productDetails.getImage().getOriginalFilename();
         product.setImage(fileName);
-        Path path = Paths.get(uploadDirectory, fileName);
+        Path path = Paths.get(PRODUCT_FILEPATH, fileName);
         Files.write(path, productDetails.getImage().getBytes());
 
         productRepository.save(product);

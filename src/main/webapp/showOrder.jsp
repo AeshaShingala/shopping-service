@@ -1,7 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,7 +16,7 @@
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css" rel="stylesheet">
@@ -25,9 +24,6 @@
     <!-- Libraries Stylesheet -->
     <link href="/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
 
-    <!-- Sweet Alert -->
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
 </head>
@@ -71,6 +67,9 @@
                     <h1 class="m-0 display-5 font-weight-semi-bold"><span class="text-primary font-weight-bold border px-3 mr-1">E</span>Shopper</h1>
                 </a>
             </div>
+            <div class="col-lg-9  text-right">
+                <a href="/buyer/history/${user.userId}" class="nav-item nav-link">Back</a>
+            </div>
             <div class="col-lg-6 col-6 text-left">
                 <form action="">
                     <div class="input-group">
@@ -83,141 +82,82 @@
                     </div>
                 </form>
             </div>
-            <div class="col-lg-3 col-6 text-right">
-                <a href="/buyer/wishlist/${user.userId}" class="btn border">
-                    <i class="fas fa-heart text-primary"></i>
-                    <span class="badge">${wishlistSize}</span>
-                </a>
-                <a href="/buyer/cart/${user.userId}" class="btn border">
-                    <i class="fas fa-shopping-cart text-primary"></i>
-                    <span class="badge">${cartSize}</span>
-                </a>
-                <a href="/buyer/profile/show/${user.userId}" class="btn border">
-                    <i class="fas fa-user-alt text-primary"></i>
-                    <span class="badge">${user.name}</span>
-                </a>
-                <a href="/" class="btn border">
-                    <i class="fas fa-sign-out-alt text-primary"></i>
-                    <span class="badge">Logout</span>
-                </a>
-            </div>
+            
         </div>
     </div>
     <!-- Topbar End -->
 
+
     <!-- Page Header Start -->
     <div class="container-fluid bg-secondary mb-5">
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
-            <h1 class="font-weight-semi-bold text-uppercase mb-3">Checkout</h1>
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">History</h1>
             <div class="d-inline-flex">
                 <p class="m-0"><a href="/buyer/${user.userId}">Home</a></p>
                 <p class="m-0 px-2">-</p>
-                <p class="m-0">Checkout</p>
+                <p class="m-0">Order</p>
             </div>
         </div>
     </div>
     <!-- Page Header End -->
 
 
-    <!-- Checkout Start -->
+    <!-- Cart Start -->
     <div class="container-fluid pt-5">
-        <form name="my-form" id="my-form" action="/buyer/order/${user.userId}" method="post">
             <div class="row px-xl-5">
-                <div class="col-lg-8">
-                    <div class="mb-4">
-                        <h4 class="font-weight-semi-bold mb-4">Shipping Address</h4>
-                        <div class="col-md-4 form-group">
-                            <label hidden>IId</label>
-                            <input class="form-control" id="userId" name="userId" type="text" value="${user.userId}" hidden>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-4 form-group">
-                                <label>First Name</label>
-                                <input class="form-control" type="text" value="${user.name}">
-                            </div>
-                            <div class="col-md-4 form-group">
-                                <label>E-mail</label>
-                                <input class="form-control" type="text" value="${user.email}">
-                            </div>
-                            <div class="col-md-4 form-group">
-                                <label>Mobile No</label>
-                                <input class="form-control" type="text" value="${user.contact}">
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <label>Address</label>
-                                <input class="form-control" type="text" name="address" id="address" value="${user.address}">
-                            </div>
-
-                            <!-- <div class="col-md-6 form-group">
-                                <label>Address Line 1</label>
-                                <input class="form-control" type="text" placeholder="123 Street">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>Address Line 2</label>
-                                <input class="form-control" type="text" placeholder="123 Street">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>Country</label>
-                                <select class="custom-select">
-                                    <option selected>United States</option>
-                                    <option>Afghanistan</option>
-                                    <option>Albania</option>
-                                    <option>Algeria</option>
-                                </select>
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>State</label>
-                                <input class="form-control" type="text" placeholder="New York">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>City</label>
-                                <input class="form-control" type="text" placeholder="New York">
-                            </div>
-                            <div class="col-md-6 form-group">
-                                <label>ZIP Code</label>
-                                <input class="form-control" type="text" placeholder="123">
-                            </div> -->
-                        </div>
-                    </div>
+                <div class="col-lg-8 table-responsive mb-5">
+                    <table class="table table-bordered text-center mb-0">
+                        <thead class="bg-secondary text-dark">
+                            <tr>
+                                <th>Products</th>
+                                <th>Colour</th>
+                                <th>Size</th>
+                                <th>Price</th>
+                                <th>Quantity</th>
+                                <th>Subtotal</th>
+                              
+                            </tr>
+                        </thead>
+                        <tbody class="align-middle">
+                            <c:forEach items="${listOfCartProducts}" var="product">
+                            <tr>
+                                <td class="align-middle"><img src="/productImages/${product.image}" alt="" style="width: 50px;"> ${product.name}</td>
+                                <td class="align-middle">${product.colour}</td>
+                                <td class="align-middle">${product.size}</td>
+                                <td class="align-middle price" id="price">${product.price}</td>
+                                <td class="align-middle">${product.quantity}</td>
+                                <td class="align-middle" style="width: 100px;"><input type="text" style="border:0px solid #ffffff; font-size:1rem; color: #6F6F6F;"  class="form-control form-control-sm bg-transparent text-center sumtotal"  class="form-control form-control-sm bg-secondary text-center sumtotal" id="sumtotal" value="${product.price * product.quantity}" readonly></td>
+                            </tr>
+                        </c:forEach>
+                        </tbody>
+                    </table>
                 </div>
                 <div class="col-lg-4">
                     <div class="card border-secondary mb-5">
                         <div class="card-header bg-secondary border-0">
-                            <h4 class="font-weight-semi-bold m-0">Order Total</h4>
+                            <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
                         </div>
                         <div class="card-body">
-                            <h5 class="font-weight-medium mb-3">Products</h5>
-                            <c:forEach items="${listOfProducts}" var="product">
-                                <div class="d-flex justify-content-between">
-                                    <p>${product.name}</p>
-                                    <p>${product.price* product.quantity}</p>
-                                </div>
-                            </c:forEach>
-                            <hr class="mt-0">
                             <div class="d-flex justify-content-between mb-3 pt-1">
                                 <h6 class="font-weight-medium">Subtotal</h6>
-                                <h6 class="font-weight-medium">${subtotal}</h6>
+                                <input type="text" class="text-md-right font-weight-medium" style="border:0px solid #ffffff; font-size:1.1rem; color: #030101;" id="subtotal" name="subtotal" value="" readonly>
                             </div>
                             <div class="d-flex justify-content-between">
                                 <h6 class="font-weight-medium">Shipping</h6>
-                                <h6 class="font-weight-medium">${shipping}</h6>
+                                <input type="text" class="text-md-right font-weight-medium" style="border:0px solid #ffffff; font-size:1.1rem; color: #030101;" id="shipping" name="shipping" value="$40" readonly>
                             </div>
                         </div>
                         <div class="card-footer border-secondary bg-transparent">
                             <div class="d-flex justify-content-between mt-2">
                                 <h5 class="font-weight-bold">Total</h5>
-                                <input type="text" class="text-md-right font-weight-bold" style="border:0px solid #ffffff; font-size:1.3rem; color: #030101;" id="total" name="total" value="${total}" readonly>    
-                            </div>
-                            <div class="card-footer border-secondary bg-transparent">
-                                <button type="button" id="placeOrder" class="btn btn-lg btn-block btn-primary font-weight-bold my-3 py-3" >Place Order</button>
+                                <input type="text" class="text-md-right font-weight-bold" style="border:0px solid #ffffff; font-size:1.2rem; color: #030101;" id="total" name="total" value="" readonly>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
     </div>
-    <!-- Checkout End -->
+    <!-- Cart End -->
 
 
     <!-- Footer Start -->
@@ -305,7 +245,7 @@
     <script src="/mail/contact.js"></script>
 
     <!-- Template Javascript -->
-    <script src="/js/main.js"></script>
+    <script src="/js/cart.js"></script>
 </body>
 
 </html>

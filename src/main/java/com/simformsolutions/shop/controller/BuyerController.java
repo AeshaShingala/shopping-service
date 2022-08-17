@@ -2,6 +2,7 @@ package com.simformsolutions.shop.controller;
 
 import com.simformsolutions.shop.dto.UserDetails;
 import com.simformsolutions.shop.entity.CartProduct;
+import com.simformsolutions.shop.entity.Purchase;
 import com.simformsolutions.shop.entity.Size;
 import com.simformsolutions.shop.entity.User;
 import com.simformsolutions.shop.exception.CategoryNotFoundException;
@@ -10,8 +11,11 @@ import com.simformsolutions.shop.repository.CategoryRepository;
 import com.simformsolutions.shop.repository.ColourRepository;
 import com.simformsolutions.shop.service.BuyerService;
 import com.simformsolutions.shop.service.ProductService;
+import com.simformsolutions.shop.service.PurchaseService;
 import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -31,6 +35,8 @@ public class BuyerController {
     ColourRepository colourRepository;
     @Autowired
     ProductService productService;
+    @Autowired
+    PurchaseService purchaseService;
 
     @GetMapping("/{id}")
     public ModelAndView dashboard(@PathVariable("id") int buyerId) {
@@ -173,14 +179,32 @@ public class BuyerController {
     }
 
     @PostMapping("/order/{bid}")
+    @ResponseBody
     public String placeOrder(@PathVariable("bid") int buyerId, @RequestParam("total") String amount, @RequestParam("address") String shippingAddress) throws JRException {
-        buyerService.updateCart(buyerId, shippingAddress, BigDecimal.valueOf(Long.parseLong(amount.substring(1))));
-        return "redirect:/buyer/" + buyerId;
+        String link = buyerService.updateCart(buyerId, shippingAddress, BigDecimal.valueOf(Long.parseLong(amount.substring(1))));
+        System.out.println(link);
+        return link;
     }
 
-    @GetMapping("/order/history")
-    public String showOrderHistory() {
-        return "";
+    @GetMapping("/invoice/{id}")
+    public ResponseEntity<byte[]> getFile(@PathVariable("id") String invoiceName) throws Exception {
+        Purchase purchase = purchaseService.findPurchaseByInvoiceName(invoiceName);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + invoiceName + ".pdf" + "\"")
+                .body(purchase.getInvoice());
     }
 
+    @GetMapping("/history/{bid}")
+    public ModelAndView showOrderHistory(@PathVariable("bid") int buyerId) {
+        return new ModelAndView("orderHistory")
+                .addObject("user", buyerService.findBuyerById(buyerId))
+                .addObject("purchases", buyerService.findOrderHistory(buyerId));
+    }
+
+    @GetMapping("/invoice/{bid}/{purchaseId}")
+    public ModelAndView showInvoice(@PathVariable("bid") int buyerId, @PathVariable("purchaseId") int purchaseId) {
+        return new ModelAndView("showOrder")
+                .addObject("user", buyerService.findBuyerById(buyerId))
+                .addObject("listOfCartProducts", buyerService.showOrder(purchaseId));
+    }
 }

@@ -16,6 +16,52 @@
         }
         toggleNavbarMethod();
         $(window).resize(toggleNavbarMethod);
+
+
+        $('#placeOrder').on('click', function () {
+            let form = document.getElementById("my-form");
+            let formData = new FormData(form);
+            let userId = $('#userId').val();
+            $.ajax({
+                url: 'http://localhost:8080/buyer/order/' + userId ,
+                type: 'POST',
+                data: formData,
+                processData:false,contentType:false,
+                success: function (result) {
+                    
+                    if (result != "") {
+                        swal.fire({
+                            title: "Order Placed Successfully",
+                            showDenyButton: true,
+                            confirmButtonText: `Download Invoice`,
+                            denyButtonText: `Continue Shopping`,
+                            }).then((swalResult) => {
+                            if (swalResult.isConfirmed) {
+                                $.ajax({
+                                    url:result,
+                                    type:'GET',
+                                    processData:false,contentType:false,
+                                    success:function(){
+                                        window.location.href = result
+                                    }
+                                }).then( () => {
+                                swal.fire({
+                                        title: "Invoice Downloaded Successfully",
+                                        text: "Happy Shopping",
+                                        icon: "success",
+                                }).then(function () {
+                                    window.location.href = "http://localhost:8080/buyer/" + userId;
+                                });
+                            })
+                                
+                            } else if (swalResult.isDenied) {
+                                window.location.href = "http://localhost:8080/buyer/" + userId ;
+                            } 
+                        })
+                    }
+                }
+            });
+        });
     });
     
     
@@ -99,6 +145,9 @@
         }
         button.parent().parent().find('input').val(newVal);
     });
+
+
+    $('')
     
 })(jQuery);
 
