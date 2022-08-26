@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -35,22 +34,28 @@ public class BuyerSecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests().antMatchers("/", "/login/**", "/signup/**", "/css/**", "/lib/**", "/js/**", "/scss/*","/img/**","/mail/**","/productImages").permitAll();
+
         http
                 .authorizeRequests()
-                .antMatchers("/buyer/**").hasAuthority("buyer")
-                .antMatchers("/", "/login/**", "/principal/**", "/signup/**", "/css/**", "/lib/**", "/js/**", "/scss/*","/img/**","/mail/**","/productImages").permitAll()
+                .antMatchers("/buyer/**")
+                .hasAuthority("buyer")
+                .antMatchers("/seller/**")
+                .hasAuthority("seller")
 
                 .and()
                 .formLogin()
                 .loginPage("/login/buyer")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/principal/buyer")
+                .defaultSuccessUrl("/login/buyer")
                 .failureUrl("/")
 
                 .and()
                 .logout()
                 .logoutSuccessUrl("/")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
                 .permitAll()
 
                 .and()

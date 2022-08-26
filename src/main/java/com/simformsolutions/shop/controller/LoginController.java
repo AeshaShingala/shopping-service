@@ -50,23 +50,24 @@ public class LoginController {
 
     @GetMapping("/login/buyer")
     public String saveBuyer() {
-        return "buyerLogin";
+        return "login";
     }
 
-    @PostMapping("/principal/buyer")
-    public String getBuyerPrincipal() {
-        String principal = SecurityContextHolder.getContext().getAuthentication().getName();
+    @PostMapping("/login/buyer")
+    public String getBuyerPrincipal(Authentication authentication) {
+        String principal = authentication.getName();
+        System.out.println(principal);
         return "redirect:/buyer/" + buyerService.findBuyerByEmail(principal).getUserId();
     }
 
     @GetMapping("/login/seller")
     public String saveSeller() {
-        return "sellerLogin";
+        return "login";
     }
 
-    @PostMapping("/principal/seller")
-    public String getSellerPrincipal() {
-        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
-        return "redirect:/seller/" + sellerService.findSellerByEmail(principal.getName()).getUserId();
+    @PostMapping("/login/seller")
+    public String getSellerPrincipal(Authentication authentication) {
+        String principal = authentication.getName();
+        return "redirect:/seller/" + sellerService.findSellerByEmail(principal).getUserId();
     }
 }

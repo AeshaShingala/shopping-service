@@ -14,6 +14,7 @@ import com.simformsolutions.shop.repository.ColourRepository;
 import com.simformsolutions.shop.service.ProductService;
 import com.simformsolutions.shop.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,6 +38,11 @@ public class SellerController {
 
     @Autowired
     ProductService productService;
+
+    @GetMapping("/home")
+    public String falseDashboard(Authentication authentication ){
+        return "redirect:/seller/" + sellerService.findSellerByEmail(authentication.getName()).getUserId();
+    }
 
     @GetMapping("/{id}")
     public ModelAndView showDashboard(@PathVariable("id") int sellerId) {

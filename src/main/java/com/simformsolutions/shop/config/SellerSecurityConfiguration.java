@@ -14,8 +14,8 @@ public class SellerSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .antMatchers( "/seller/**")
+                .antMatcher( "/seller/**")
+                .authorizeRequests().anyRequest()
                 .hasAnyAuthority("seller", "admin")
 
                 .and()
@@ -23,7 +23,7 @@ public class SellerSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/login/seller")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/principal/seller", true)
+                .defaultSuccessUrl("/login/seller")
                 .failureUrl("/");
     }
 }

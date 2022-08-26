@@ -15,6 +15,7 @@ import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -36,6 +37,11 @@ public class BuyerController {
     ProductService productService;
     @Autowired
     PurchaseService purchaseService;
+
+    @GetMapping("/home")
+    public String falseDashboard(Authentication authentication ){
+        return "redirect:/buyer/" + buyerService.findBuyerByEmail(authentication.getName()).getUserId();
+    }
 
     @GetMapping("/{id}")
     public ModelAndView dashboard(@PathVariable("id") int buyerId) {

@@ -118,8 +118,8 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link" data-toggle="dropdown">Login <i class="fa fa-angle-down float-right mt-1"></i></a>
                                 <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                    <a href="/login/buyer" class="dropdown-item">Buyer</a>
-                                    <a href="/login/seller" class="dropdown-item">Seller</a>
+                                    <a href="/buyer/home" class="dropdown-item">Buyer</a>
+                                    <a href="/seller/home" class="dropdown-item">Seller</a>
                                 </div>
                                 
                             </div>
