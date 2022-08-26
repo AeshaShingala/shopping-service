@@ -40,7 +40,7 @@
             <div class="col-lg-3  text-right d-inline-flex">
                 <a href="/seller/product/add/${seller.userId}" class="nav-item nav-link">Add Product</a>
                 <a href="/seller/profile/show/${seller.userId}" class="nav-item nav-link ">${seller.name}</a>
-                <a href="/" class="nav-item nav-link">Logout</a>
+                <a href="/logout" class="nav-item nav-link">Logout</a>
             </div>
         </div>
     </div>

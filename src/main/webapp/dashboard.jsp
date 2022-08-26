@@ -28,6 +28,36 @@
 <body>
     <!-- Topbar Start -->
     <div class="container-fluid">
+        <div class="row bg-secondary py-2 px-xl-5">
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-dark" href="">FAQs</a>
+                    <span class="text-muted px-2">|</span>
+                    <a class="text-dark" href="">Help</a>
+                    <span class="text-muted px-2">|</span>
+                    <a class="text-dark" href="">Support</a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center text-lg-right">
+                <div class="d-inline-flex align-items-center">
+                    <a class="text-dark px-2" href="">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a class="text-dark px-2" href="">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a class="text-dark px-2" href="">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a class="text-dark px-2" href="">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a class="text-dark pl-2" href="">
+                        <i class="fab fa-youtube"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
         <div class="row align-items-center py-3 px-xl-5">
             <div class="col-lg-3 d-none d-lg-block">
                 <a href="" class="text-decoration-none">
@@ -49,7 +79,7 @@
                 </a>
                 <nav class="collapse show navbar navbar-vertical navbar-light align-items-start p-0 border border-top-0 border-bottom-0" id="navbar-vertical">
                     <div class="navbar-nav w-100 overflow-hidden" style="height: 410px">
-                        <a href="#" class="nav-item nav-link">Dresses </a>
+                        <!-- <a href="#" class="nav-item nav-link">Dresses </a> -->
                         <a href="" class="nav-item nav-link">Shirts</a>
                         <a href="" class="nav-item nav-link">Jeans</a>
                         <a href="" class="nav-item nav-link">Swimwear</a>
@@ -88,16 +118,17 @@
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link" data-toggle="dropdown">Login <i class="fa fa-angle-down float-right mt-1"></i></a>
                                 <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                    <a href="/buyer/login" class="dropdown-item">Buyer</a>
-                                    <a href="/seller/login" class="dropdown-item">Seller</a>
+                                    <a href="/login/buyer" class="dropdown-item">Buyer</a>
+                                    <a href="/login/seller" class="dropdown-item">Seller</a>
                                 </div>
+                                
                             </div>
 
                             <div class="nav-item dropdown">
                                 <a href="#" class="nav-link" data-toggle="dropdown">Register <i class="fa fa-angle-down float-right mt-1"></i></a>
                                 <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
-                                    <a href="/buyer/signup" class="dropdown-item">Buyer</a>
-                                    <a href="/seller/signup" class="dropdown-item">Seller</a>
+                                    <a href="/signup/buyer" class="dropdown-item">Buyer</a>
+                                    <a href="/signup/seller" class="dropdown-item">Seller</a>
                                 </div>
                             </div>
                         </div>

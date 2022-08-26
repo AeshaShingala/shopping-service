@@ -92,7 +92,7 @@
                     <div class=" dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-30 m-0 ">
                         <a href="/buyer/profile/show/${user.userId}" class="dropdown-item">Profile</a>
                         <a href="/buyer/history/${user.userId}" class="dropdown-item">History</a>
-                        <a href="/" class="dropdown-item">Logout</a>
+                        <a href="/logout" class="dropdown-item">Logout</a>
                     </div>
                 </a>
                 

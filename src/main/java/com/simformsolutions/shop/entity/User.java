@@ -1,6 +1,8 @@
 package com.simformsolutions.shop.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -9,9 +11,7 @@ import java.util.List;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@ToString
+@Data
 public class User {
 
     @Id
@@ -25,12 +25,11 @@ public class User {
     @Column(length = 20)
     private String contact;
 
-
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_product", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "productId"))
     private List<Product> products;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "roleId"))
     private List<Role> roles = new ArrayList<>();
 
@@ -47,4 +46,5 @@ public class User {
     public void setProduct(Product product) {
         this.products.add(product);
     }
+
 }

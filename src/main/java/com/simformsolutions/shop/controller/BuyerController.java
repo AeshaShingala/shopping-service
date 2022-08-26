@@ -1,6 +1,5 @@
 package com.simformsolutions.shop.controller;
 
-import com.simformsolutions.shop.dto.UserDetails;
 import com.simformsolutions.shop.entity.CartProduct;
 import com.simformsolutions.shop.entity.Purchase;
 import com.simformsolutions.shop.entity.Size;
@@ -46,29 +45,6 @@ public class BuyerController {
                 .addObject("listOfCategories", categoryRepository.findAll())
                 .addObject("wishlistSize", buyerService.findBuyerById(buyerId).getWishlist().getWishlistProducts().size())
                 .addObject("cartSize", buyerService.findBuyerById(buyerId).getCart().getCartProducts().size());
-    }
-
-    @GetMapping("/signup")
-    public String addProfile() {
-        return "register";
-    }
-
-    @PostMapping("/signup")
-    public String addBuyer(UserDetails userDetails) {
-        User user = buyerService.saveBuyer(userDetails);
-        buyerService.createWishlistAndCart(user);
-        return "redirect:/buyer/" + user.getUserId();
-    }
-
-    @GetMapping("/login")
-    public String saveBuyer() {
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String saveBuyer(@RequestParam("email") String email, @RequestParam("password") String password) {
-        User user = buyerService.findBuyerByEmail(email);
-        return "redirect:/buyer/" + user.getUserId();
     }
 
     @GetMapping("/profile/show/{id}")

@@ -17,3 +17,10 @@ spring:
       prefix: /
       suffix: .jsp
 
+  logging:
+    level:
+      org:
+        springframework:
+          security: DEBUG
+
+
