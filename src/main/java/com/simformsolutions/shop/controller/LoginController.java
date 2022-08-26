@@ -1,15 +1,18 @@
 package com.simformsolutions.shop.controller;
 
 import com.simformsolutions.shop.dto.UserDetail;
+import com.simformsolutions.shop.entity.Role;
 import com.simformsolutions.shop.entity.User;
 import com.simformsolutions.shop.service.BuyerService;
 import com.simformsolutions.shop.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 @Controller
 public class LoginController {
@@ -27,7 +30,7 @@ public class LoginController {
 
     @GetMapping("/signup/buyer")
     public String registerBuyer() {
-        return "buyerRegister";
+        return "register";
     }
 
     @PostMapping("/signup/buyer")
@@ -39,7 +42,7 @@ public class LoginController {
 
     @GetMapping("/signup/seller")
     public String registerSeller() {
-        return "sellerRegister";
+        return "register";
     }
 
     @PostMapping("/signup/seller")
@@ -48,25 +51,20 @@ public class LoginController {
         return "redirect:/seller/" + user.getUserId();
     }
 
-    @GetMapping("/login/buyer")
-    public String saveBuyer() {
-        return "buyerLogin";
+    @GetMapping("/login")
+    public String loginUser() {
+        return "login";
     }
 
-    @PostMapping("/principal/buyer")
-    public String getBuyerPrincipal() {
+    @PostMapping("/principal")
+    public ModelAndView getUserPrincipal() {
         String principal = SecurityContextHolder.getContext().getAuthentication().getName();
-        return "redirect:/buyer/" + buyerService.findBuyerByEmail(principal).getUserId();
-    }
-
-    @GetMapping("/login/seller")
-    public String saveSeller() {
-        return "sellerLogin";
-    }
-
-    @PostMapping("/principal/seller")
-    public String getSellerPrincipal() {
-        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
-        return "redirect:/seller/" + sellerService.findSellerByEmail(principal.getName()).getUserId();
+        User user = buyerService.findBuyerByEmail(principal);
+        List<String> roles = user.getRoles().stream().map(Role::getName).toList();
+        System.out.println(user);
+        if (roles.size() > 1)
+            return new ModelAndView("selectRole").addObject("user", user);
+        else
+            return new ModelAndView("redirect:/" + roles.get(0) + "/" + user.getUserId());
     }
 }
