@@ -7,23 +7,27 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
-@EnableWebSecurity()
+@EnableWebSecurity(debug = true)
 @Order(2)
 public class SellerSecurityConfiguration extends WebSecurityConfigurerAdapter {
+    public SellerSecurityConfiguration() {
+        super();
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .antMatcher( "/seller/**")
-                .authorizeRequests().anyRequest()
-                .hasAnyAuthority("seller", "admin")
+                .antMatcher("/seller/**")
+                .authorizeRequests()
+                .anyRequest()
+                .hasAuthority("seller")
 
                 .and()
                 .formLogin()
                 .loginPage("/login/seller")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .defaultSuccessUrl("/login/seller")
+                .loginProcessingUrl("/login/seller")
                 .failureUrl("/");
     }
 }

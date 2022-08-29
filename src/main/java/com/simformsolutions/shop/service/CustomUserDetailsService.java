@@ -30,8 +30,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
         String userRole = Arrays.stream(path.split("/")).toList().get(4);
 
-        if (roles.contains(userRole))
+        if (roles.contains(userRole)) {
+            System.out.println(userRole);
             return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), Arrays.asList(new SimpleGrantedAuthority(userRole)));
+        }
         throw new UsernameNotFoundException("Not found: " + username);
     }
 }

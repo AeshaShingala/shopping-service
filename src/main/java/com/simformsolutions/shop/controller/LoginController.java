@@ -6,7 +6,6 @@ import com.simformsolutions.shop.service.BuyerService;
 import com.simformsolutions.shop.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,6 +54,7 @@ public class LoginController {
 
     @PostMapping("/login/buyer")
     public String getBuyerPrincipal(Authentication authentication) {
+        System.out.println("Works!!");
         String principal = authentication.getName();
         System.out.println(principal);
         return "redirect:/buyer/" + buyerService.findBuyerByEmail(principal).getUserId();
@@ -62,7 +62,7 @@ public class LoginController {
 
     @GetMapping("/login/seller")
     public String saveSeller() {
-        return "login";
+        return "sellerLogin";
     }
 
     @PostMapping("/login/seller")
