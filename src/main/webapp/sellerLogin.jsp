@@ -46,7 +46,29 @@
 					<div class="card">
 						<div class="card-header">Login</div>
 						<div class="card-body">
-							<form name="my-form" action="/login/seller" method="post">
+							<form action="/admin/login" method="post" style="max-width: 400px; margin: 0 auto;">
+								<h2>Admin Login - ABC Application</h2>
+								
+						
+										
+								<table>
+									<tr>
+										<td>E-mail: </td>
+										<td><input type="email" name="email" required /></td>
+									</tr>
+									<tr>
+										<td>Password: </td>
+										<td><input type="password" name="password" required /></td>
+									</tr> 
+									<tr><td>&nbsp;</td></tr>
+									<tr>
+										<td colspan="2" ><input type="submit" value="Login" /></td>
+									</tr>
+								</table>
+							</form>
+
+
+							<!-- <form name="my-form" action="/login/seller/principal" method="post">
 								<div class="form-group row">
 									<label for="email"
 										class="col-md-4 col-form-label text-md-right">E-Mail
@@ -67,7 +89,7 @@
 								<div class="col-md-6 offset-md-4">
 									<button type="submit" class="btn btn-primary">Login</button>
 								</div>
-							</form>
+							</form> -->
 						</div>
 					</div>
 				</div>

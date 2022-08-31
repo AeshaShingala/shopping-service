@@ -1,3 +1,4 @@
+/*
 package com.simformsolutions.shop.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -10,10 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity(debug = true)
 @Order(2)
 public class SellerSecurityConfiguration extends WebSecurityConfigurerAdapter {
-    public SellerSecurityConfiguration() {
-        super();
-    }
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -27,8 +24,9 @@ public class SellerSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .loginPage("/login/seller")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .loginProcessingUrl("/login/seller")
+                .loginProcessingUrl("/login/seller/principal")
                 .failureUrl("/");
     }
 }
 
+*/

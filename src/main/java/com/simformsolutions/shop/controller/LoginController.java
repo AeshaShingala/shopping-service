@@ -6,9 +6,11 @@ import com.simformsolutions.shop.service.BuyerService;
 import com.simformsolutions.shop.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class LoginController {
@@ -26,7 +28,7 @@ public class LoginController {
 
     @GetMapping("/signup/buyer")
     public String registerBuyer() {
-        return "buyerRegister";
+        return "register";
     }
 
     @PostMapping("/signup/buyer")
@@ -38,7 +40,7 @@ public class LoginController {
 
     @GetMapping("/signup/seller")
     public String registerSeller() {
-        return "sellerRegister";
+        return "register";
     }
 
     @PostMapping("/signup/seller")
@@ -47,17 +49,15 @@ public class LoginController {
         return "redirect:/seller/" + user.getUserId();
     }
 
-    @GetMapping("/login/buyer")
+/*    @GetMapping("/login/buyer")
     public String saveBuyer() {
-        return "login";
+        return "buyerLogin";
     }
 
-    @PostMapping("/login/buyer")
+    @PostMapping("/login/buyer/principal")
     public String getBuyerPrincipal(Authentication authentication) {
-        System.out.println("Works!!");
-        String principal = authentication.getName();
-        System.out.println(principal);
-        return "redirect:/buyer/" + buyerService.findBuyerByEmail(principal).getUserId();
+        return "redirect:/buyer/home";
+//        return "redirect:/buyer/" + buyerService.findBuyerByEmail(authentication.getName()).getUserId();
     }
 
     @GetMapping("/login/seller")
@@ -65,9 +65,28 @@ public class LoginController {
         return "sellerLogin";
     }
 
-    @PostMapping("/login/seller")
+    @PostMapping("/login/seller/principal")
     public String getSellerPrincipal(Authentication authentication) {
-        String principal = authentication.getName();
-        return "redirect:/seller/" + sellerService.findSellerByEmail(principal).getUserId();
+        return "redirect:/seller/home";
+//        return "redirect:/seller/" + sellerService.findSellerByEmail(authentication.getName()).getUserId();
+    }*/
+
+    @GetMapping("/admin/login")
+    public String saveSeller() {
+        return "sellerLogin";
     }
+
+    @PostMapping("/admin/login")
+    public String getSellerPrincipal(Authentication authentication) {
+        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+        return "redirect:/admin/home";
+//        return "redirect:/seller/" + sellerService.findSellerByEmail(authentication.getName()).getUserId();
+    }
+
+    @GetMapping("/admin/home")
+    @ResponseBody
+    public String home() {
+        return "sellerLogin";
+    }
+
 }
