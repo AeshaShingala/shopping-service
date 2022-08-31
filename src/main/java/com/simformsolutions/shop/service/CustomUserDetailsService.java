@@ -1,6 +1,5 @@
 package com.simformsolutions.shop.service;
 
-import com.simformsolutions.shop.config.CustomUserDetails;
 import com.simformsolutions.shop.entity.Role;
 import com.simformsolutions.shop.entity.User;
 import com.simformsolutions.shop.repository.UserRepository;
@@ -33,7 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         if (roles.contains(userRole)) {
             System.out.println(userRole);
-            return new CustomUserDetails(user.get());
+            return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), Arrays.asList(new SimpleGrantedAuthority(userRole)));
         }
         throw new UsernameNotFoundException("Not found: " + username);
     }

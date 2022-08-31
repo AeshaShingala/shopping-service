@@ -1,4 +1,3 @@
-/*
 package com.simformsolutions.shop.config;
 
 import com.simformsolutions.shop.service.CustomUserDetailsService;
@@ -11,15 +10,8 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @EnableWebSecurity
 public class SecurityConfig {
@@ -63,14 +55,8 @@ public class SecurityConfig {
                     .usernameParameter("email")
                     .passwordParameter("password")
                     .loginProcessingUrl("/login/buyer/principal")
-                    .failureHandler(new AuthenticationFailureHandler() {
-                        @Override
-                        public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-                            exception.printStackTrace();
-                        }
-                    })
-                    .and()
 
+                    .and()
                     .logout()
                     .logoutSuccessUrl("/")
                     .invalidateHttpSession(true)
@@ -83,7 +69,6 @@ public class SecurityConfig {
     }
 
     @Configuration
-    @Order(2)
     public static class SellerSecurityConfiguration extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -92,8 +77,7 @@ public class SecurityConfig {
                     .authorizeRequests()
                     .anyRequest()
                     .hasAuthority("seller")
-                    .antMatchers("/", "/login/**", "/signup/**", "/css/**", "/lib/**", "/js/**", "/scss/**", "/img/**", "/mail/**", "/productImages/**")
-                    .permitAll()
+
 
                     .and()
                     .formLogin()
@@ -105,4 +89,4 @@ public class SecurityConfig {
                     .permitAll();
         }
     }
-}*/
+}

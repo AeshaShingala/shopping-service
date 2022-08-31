@@ -49,7 +49,7 @@ public class LoginController {
         return "redirect:/seller/" + user.getUserId();
     }
 
-/*    @GetMapping("/login/buyer")
+    @GetMapping("/login/buyer")
     public String saveBuyer() {
         return "buyerLogin";
     }
@@ -69,9 +69,9 @@ public class LoginController {
     public String getSellerPrincipal(Authentication authentication) {
         return "redirect:/seller/home";
 //        return "redirect:/seller/" + sellerService.findSellerByEmail(authentication.getName()).getUserId();
-    }*/
+    }
 
-    @GetMapping("/admin/login")
+  /*  @GetMapping("/admin/login")
     public String saveSeller() {
         return "sellerLogin";
     }
@@ -87,6 +87,6 @@ public class LoginController {
     @ResponseBody
     public String home() {
         return "sellerLogin";
-    }
+    }*/
 
 }
