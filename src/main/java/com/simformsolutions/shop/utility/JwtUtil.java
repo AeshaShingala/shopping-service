@@ -1,4 +1,4 @@
-package com.simformsolutions.shop.util;
+package com.simformsolutions.shop.utility;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -2,7 +2,7 @@ package com.simformsolutions.shop.service;
 
 import com.simformsolutions.shop.dto.CartProductDetails;
 import com.simformsolutions.shop.dto.PurchaseDetails;
-import com.simformsolutions.shop.dto.UserDetails;
+import com.simformsolutions.shop.dto.UserDetail;
 import com.simformsolutions.shop.entity.*;
 import com.simformsolutions.shop.exception.ProductNotFoundException;
 import com.simformsolutions.shop.exception.SellerNotFoundException;
@@ -11,6 +11,7 @@ import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -42,15 +43,25 @@ public class BuyerService {
     @Autowired
     ModelMapper modelMapper;
 
-    public User userDetailsToUser(UserDetails userDetails) {
-        return modelMapper.map(userDetails, User.class);
+    public User userDetailsToUser(UserDetail userDetail) {
+        return modelMapper.map(userDetail, User.class);
     }
 
-    public User saveBuyer(UserDetails userDetails) {
+    public User saveBuyer(UserDetail userDetail) {
+        Optional<User> optionalUser= userRepository.findByEmail(userDetail.getEmail());
         Role role = roleRepository.findByName("buyer");
-        User user = userDetailsToUser(userDetails);
-        user.getRoles().add(role);
-        return userRepository.save(user);
+
+        if(optionalUser.isEmpty()) {
+            userDetail.setPassword(new BCryptPasswordEncoder().encode(userDetail.getPassword()));
+            User user = userDetailsToUser(userDetail);
+            user.getRoles().add(role);
+            return userRepository.save(user);
+        }
+        else
+        {
+            optionalUser.get().getRoles().add(role);
+            return userRepository.save(optionalUser.get());
+        }
     }
 
     public User findBuyerById(int buyerId) {

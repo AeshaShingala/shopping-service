@@ -1,6 +1,6 @@
 package com.simformsolutions.shop.controller;
 
-import com.simformsolutions.shop.dto.UserDetails;
+import com.simformsolutions.shop.dto.UserDetail;
 import com.simformsolutions.shop.entity.CartProduct;
 import com.simformsolutions.shop.entity.Purchase;
 import com.simformsolutions.shop.entity.Size;
@@ -16,6 +16,7 @@ import net.sf.jasperreports.engine.JRException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -38,6 +39,11 @@ public class BuyerController {
     @Autowired
     PurchaseService purchaseService;
 
+    @GetMapping("/home")
+    public String falseDashboard(Authentication authentication ){
+        return "redirect:/buyer/" + buyerService.findBuyerByEmail(authentication.getName()).getUserId();
+    }
+
     @GetMapping("/{id}")
     public ModelAndView dashboard(@PathVariable("id") int buyerId) {
         return new ModelAndView("buyerDashboard")
@@ -54,8 +60,8 @@ public class BuyerController {
     }
 
     @PostMapping("/signup")
-    public String addBuyer(UserDetails userDetails) {
-        User user = buyerService.saveBuyer(userDetails);
+    public String addBuyer(UserDetail userDetail) {
+        User user = buyerService.saveBuyer(userDetail);
         buyerService.createWishlistAndCart(user);
         return "redirect:/buyer/" + user.getUserId();
     }

@@ -2,7 +2,7 @@ package com.simformsolutions.shop.controller;
 
 import com.simformsolutions.shop.dto.ProductDetails;
 import com.simformsolutions.shop.dto.ProductsDetails;
-import com.simformsolutions.shop.dto.UserDetails;
+import com.simformsolutions.shop.dto.UserDetail;
 import com.simformsolutions.shop.entity.Colour;
 import com.simformsolutions.shop.entity.Product;
 import com.simformsolutions.shop.entity.Size;
@@ -14,11 +14,11 @@ import com.simformsolutions.shop.repository.ColourRepository;
 import com.simformsolutions.shop.service.ProductService;
 import com.simformsolutions.shop.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
@@ -39,6 +39,11 @@ public class SellerController {
     @Autowired
     ProductService productService;
 
+    @GetMapping("/home")
+    public String falseDashboard(Authentication authentication ){
+        return "redirect:/seller/" + sellerService.findSellerByEmail(authentication.getName()).getUserId();
+    }
+
     @GetMapping("/{id}")
     public ModelAndView showDashboard(@PathVariable("id") int sellerId) {
         ModelAndView mv = new ModelAndView("sellerDashboard");
@@ -53,8 +58,8 @@ public class SellerController {
     }
 
     @PostMapping("/signup")
-    public String addSeller(UserDetails userDetails) {
-        User user = sellerService.saveSeller(userDetails);
+    public String addSeller(UserDetail userDetail) {
+        User user = sellerService.saveSeller(userDetail);
         return "redirect:/seller/" + user.getUserId();
     }
 

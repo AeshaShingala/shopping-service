@@ -1,7 +1,7 @@
 package com.simformsolutions.shop.service;
 
 import com.simformsolutions.shop.dto.ProductDetails;
-import com.simformsolutions.shop.dto.UserDetails;
+import com.simformsolutions.shop.dto.UserDetail;
 import com.simformsolutions.shop.entity.Category;
 import com.simformsolutions.shop.entity.Product;
 import com.simformsolutions.shop.entity.Role;
@@ -11,6 +11,7 @@ import com.simformsolutions.shop.exception.SellerNotFoundException;
 import com.simformsolutions.shop.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -43,15 +44,25 @@ public class SellerService {
         this.productService = productService;
     }
 
-    public User userDetailsToUser(UserDetails userDetails) {
-        return modelMapper.map(userDetails, User.class);
+    public User userDetailsToUser(UserDetail userDetail) {
+        return modelMapper.map(userDetail, User.class);
     }
 
-    public User saveSeller(UserDetails userDetails) {
+    public User saveSeller(UserDetail userDetail) {
+        Optional<User> optionalUser = userRepository.findByEmail(userDetail.getEmail());
         Role role = roleRepository.findByName("seller");
-        User user = userDetailsToUser(userDetails);
-        user.getRoles().add(role);
-        return userRepository.save(user);
+
+        if(optionalUser.isEmpty()) {
+            userDetail.setPassword(new BCryptPasswordEncoder().encode(userDetail.getPassword()));
+            User user = userDetailsToUser(userDetail);
+            user.getRoles().add(role);
+            return userRepository.save(user);
+        }
+        else
+        {
+            optionalUser.get().getRoles().add(role);
+            return userRepository.save(optionalUser.get());
+        }
     }
 
     public User findSellerById(int id) {
