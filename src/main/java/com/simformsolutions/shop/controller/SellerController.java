@@ -52,17 +52,6 @@ public class SellerController {
         return mv;
     }
 
-    @GetMapping("/signup")
-    public String registerSeller() {
-        return "register";
-    }
-
-    @PostMapping("/signup")
-    public String addSeller(UserDetail userDetail) {
-        User user = sellerService.saveSeller(userDetail);
-        return "redirect:/seller/" + user.getUserId();
-    }
-
     @GetMapping("/login")
     public String login() {
         return "login";

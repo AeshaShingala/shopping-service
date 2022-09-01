@@ -91,7 +91,7 @@
                     <i class="fas fa-user-alt text-primary"></i>
                     <span class="badge">${user.name}</span>
                 </a>
-                <a href="/" class="btn border">
+                <a href="/logout" class="btn border">
                     <i class="fas fa-sign-out-alt text-primary"></i>
                     <span class="badge">Logout</span>
                 </a>

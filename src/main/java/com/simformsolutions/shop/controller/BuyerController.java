@@ -54,18 +54,6 @@ public class BuyerController {
                 .addObject("cartSize", buyerService.findBuyerById(buyerId).getCart().getCartProducts().size());
     }
 
-    @GetMapping("/signup")
-    public String addProfile() {
-        return "register";
-    }
-
-    @PostMapping("/signup")
-    public String addBuyer(UserDetail userDetail) {
-        User user = buyerService.saveBuyer(userDetail);
-        buyerService.createWishlistAndCart(user);
-        return "redirect:/buyer/" + user.getUserId();
-    }
-
     @GetMapping("/login")
     public String saveBuyer() {
         return "login";

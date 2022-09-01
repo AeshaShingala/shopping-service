@@ -44,10 +44,9 @@ public class LoginController {
 
     @GetMapping("/signup/buyer")
     public String registerBuyer() {
-        return "buyerRegister";
+        return "register";
     }
 
-    @Transactional
     @PostMapping("/signup/buyer")
     public String addBuyer(UserDetail userDetail) {
         User user = buyerService.saveBuyer(userDetail);
@@ -57,7 +56,7 @@ public class LoginController {
 
     @GetMapping("/signup/seller")
     public String registerSeller() {
-        return "sellerRegister";
+        return "register";
     }
 
     @PostMapping("/signup/seller")
@@ -68,10 +67,10 @@ public class LoginController {
 
     @GetMapping("/login/buyer")
     public String saveBuyer() {
-        return "buyerLogin";
+        return "login";
     }
 
-    @PostMapping("/buyer/principal")
+    @PostMapping("/login/buyer")
     public void getBuyerPrincipal(@ModelAttribute AuthRequest authRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
         Cookie cookie = CookieUtil.cookieMaker(authRequest.getEmail(),authRequest.getPassword(),authenticationManager,jwtUtil,customUserDetailsService,request);
         if(cookie == null){
@@ -85,7 +84,18 @@ public class LoginController {
 
     @GetMapping("/login/seller")
     public String saveSeller() {
-        return "sellerLogin";
+        return "login";
     }
 
+    @PostMapping("/login/seller")
+    public void getSellerPrincipal(@ModelAttribute AuthRequest authRequest, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Cookie cookie = CookieUtil.cookieMaker(authRequest.getEmail(),authRequest.getPassword(),authenticationManager,jwtUtil,customUserDetailsService,request);
+        if(cookie == null){
+            response.sendRedirect("/");
+        }	else {
+            response.addCookie(cookie);
+            System.out.println(cookie.getValue());
+            response.sendRedirect("/seller/"+ sellerService.findSellerByEmail(authRequest.getEmail()).getUserId());
+        }
+    }
 }

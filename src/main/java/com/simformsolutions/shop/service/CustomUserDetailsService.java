@@ -25,14 +25,13 @@ public class CustomUserDetailsService implements UserDetailsService {
             Optional<User> user = userRepository.findByEmail(username);
             if (user.isEmpty()) throw new UsernameNotFoundException("");
 
-          /*  List<String> roles = user.get().getRoles().stream().map(Role::getName).toList();
-            String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
+           List<String> roles = user.get().getRoles().stream().map(Role::getName).toList();
+          /*  String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
             String userRole = Arrays.stream(path.split("/")).toList().get(4);
 
             if (roles.contains(userRole))
                 return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), Arrays.asList(new SimpleGrantedAuthority(userRole)));
             throw new UsernameNotFoundException("Not found: " + username);*/
-            return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), Arrays.asList(new SimpleGrantedAuthority("seller")));
-
+            return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), Arrays.asList(new SimpleGrantedAuthority(roles.get(0))));
         }
 }

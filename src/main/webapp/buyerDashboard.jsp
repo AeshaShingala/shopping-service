@@ -92,7 +92,7 @@
                     <div class=" dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-30 m-0 ">
                         <a href="/buyer/profile/show/${user.userId}" class="dropdown-item">Profile</a>
                         <a href="/buyer/history/${user.userId}" class="dropdown-item">History</a>
-                        <a href="/" class="dropdown-item">Logout</a>
+                        <a href="/logout" class="dropdown-item">Logout</a>
                     </div>
                 </a>
                 
@@ -360,7 +360,7 @@
                 </p>
             </div>
             <div class="col-md-6 px-xl-0 text-center text-md-right">
-                <img class="img-fluid" src="img/payments.png" alt="">
+                <img class="img-fluid" src="/img/payments.png" alt="">
             </div>
         </div>
     </div>
@@ -374,13 +374,13 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/easing/easing.min.js"></script>
-    <script src="lib/owlcarousel/owl.carousel.min.js"></script>
+    <script src="/lib/easing/easing.min.js"></script>
+    <script src="/lib/owlcarousel/owl.carousel.min.js"></script>
 
     <!-- Contact Javascript File -->
-    <script src="mail/jqBootstrapValidation.min.js"></script>
-    <script src="mail/contact.js"></script>
+    <script src="/mail/jqBootstrapValidation.min.js"></script>
+    <script src="/mail/contact.js"></script>
 
     <!-- Template Javascript -->
-    <script src="js/main.js"></script>
+    <script src="/js/main.js"></script>
 </body>
