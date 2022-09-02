@@ -7,7 +7,7 @@ import com.simformsolutions.shop.entity.Product;
 import com.simformsolutions.shop.entity.Role;
 import com.simformsolutions.shop.entity.User;
 import com.simformsolutions.shop.exception.CategoryNotFoundException;
-import com.simformsolutions.shop.exception.SellerNotFoundException;
+import com.simformsolutions.shop.exception.UserNotFoundException;
 import com.simformsolutions.shop.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,20 +48,19 @@ public class SellerService {
         return modelMapper.map(userDetail, User.class);
     }
 
-    public User saveSeller(UserDetail userDetail) {
+    public void saveSeller(UserDetail userDetail) {
         Optional<User> optionalUser = userRepository.findByEmail(userDetail.getEmail());
         Role role = roleRepository.findByName("seller");
 
-        if(optionalUser.isEmpty()) {
+        if (optionalUser.isEmpty()) {
             userDetail.setPassword(new BCryptPasswordEncoder().encode(userDetail.getPassword()));
             User user = userDetailsToUser(userDetail);
             user.getRoles().add(role);
-            return userRepository.save(user);
-        }
-        else
-        {
-            optionalUser.get().getRoles().add(role);
-            return userRepository.save(optionalUser.get());
+            userRepository.save(user);
+        } else {
+            if (!(optionalUser.get().getRoles().contains(role)))
+                optionalUser.get().getRoles().add(role);
+            userRepository.save(optionalUser.get());
         }
     }
 
@@ -70,18 +69,18 @@ public class SellerService {
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         }
-        throw new SellerNotFoundException(id + "");
+        throw new UserNotFoundException(id + "");
     }
 
-    public User findSellerByEmail(String email) throws SellerNotFoundException {
+    public User findSellerByEmail(String email) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.findUserByEmail(email);
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         }
-        throw new SellerNotFoundException(email + "");
+        throw new UserNotFoundException(email + "");
     }
 
-    public User updateSeller(User user) throws SellerNotFoundException {
+    public User updateSeller(User user) throws UserNotFoundException {
         Optional<User> optionalUser = userRepository.findById(user.getUserId());
         if (optionalUser.isPresent()) {
             User currentUser = optionalUser.get();
@@ -92,7 +91,7 @@ public class SellerService {
             currentUser.setAddress(user.getAddress());
             return userRepository.save(currentUser);
         }
-        throw new SellerNotFoundException(user.getUserId() + "");
+        throw new UserNotFoundException(user.getUserId() + "");
     }
 
     public void saveSellingProduct(int sellerId, List<ProductDetails> productDetailsList) throws CategoryNotFoundException, IOException {
@@ -123,7 +122,7 @@ public class SellerService {
         if (user.isPresent()) {
             return user.get().getProducts();
         }
-        throw new SellerNotFoundException(sellerId + "");
+        throw new UserNotFoundException(sellerId + "");
     }
 
     public Category findCategoryById(int id) throws CategoryNotFoundException {

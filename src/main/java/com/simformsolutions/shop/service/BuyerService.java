@@ -5,7 +5,7 @@ import com.simformsolutions.shop.dto.PurchaseDetails;
 import com.simformsolutions.shop.dto.UserDetail;
 import com.simformsolutions.shop.entity.*;
 import com.simformsolutions.shop.exception.ProductNotFoundException;
-import com.simformsolutions.shop.exception.SellerNotFoundException;
+import com.simformsolutions.shop.exception.UserNotFoundException;
 import com.simformsolutions.shop.repository.*;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -59,7 +59,8 @@ public class BuyerService {
         }
         else
         {
-            optionalUser.get().getRoles().add(role);
+            if(!(optionalUser.get().getRoles().contains(role)))
+                optionalUser.get().getRoles().add(role);
             return userRepository.save(optionalUser.get());
         }
     }
@@ -68,14 +69,14 @@ public class BuyerService {
         Optional<User> optionalUser = userRepository.findById(buyerId);
         if (optionalUser.isPresent())
             return optionalUser.get();
-        throw new SellerNotFoundException(buyerId + "");
+        throw new UserNotFoundException(buyerId + "");
     }
 
     public User findBuyerByEmail(String email) {
         Optional<User> optionalUser = userRepository.findUserByEmail(email);
         if (optionalUser.isPresent())
             return optionalUser.get();
-        throw new SellerNotFoundException(email);
+        throw new UserNotFoundException(email);
     }
 
     public User updateBuyer(User user) {
@@ -89,7 +90,7 @@ public class BuyerService {
             currentUser.setAddress(user.getAddress());
             return userRepository.save(currentUser);
         }
-        throw new SellerNotFoundException(user.getUserId() + "");
+        throw new UserNotFoundException(user.getUserId() + "");
     }
 
     public void createWishlistAndCart(User user) {

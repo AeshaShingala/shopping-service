@@ -22,7 +22,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     @Autowired
-    private JwtUtil jwtUtil;
+    JwtUtil jwtUtil;
 
     @Autowired
     CustomUserDetailsService customUserDetailsService;
@@ -55,7 +55,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
             catch (UsernameNotFoundException e) {
                 System.out.println(e.getMessage());
-                httpServletResponse.sendRedirect("/error");
+                httpServletResponse.sendRedirect("/");
             }
             if (userDetails !=null  && jwtUtil.validateToken(token, userDetails) ) {
 

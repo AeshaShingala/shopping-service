@@ -26,12 +26,15 @@ public class CustomUserDetailsService implements UserDetailsService {
             if (user.isEmpty()) throw new UsernameNotFoundException("");
 
            List<String> roles = user.get().getRoles().stream().map(Role::getName).toList();
-          /*  String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
-            String userRole = Arrays.stream(path.split("/")).toList().get(4);
+            String path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString();
+            List<String> userRole = Arrays.stream(path.split("/")).toList();
 
-            if (roles.contains(userRole))
-                return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), Arrays.asList(new SimpleGrantedAuthority(userRole)));
-            throw new UsernameNotFoundException("Not found: " + username);*/
-            return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), Arrays.asList(new SimpleGrantedAuthority(roles.get(0))));
+            if (roles.contains("buyer") && userRole.contains("buyer"))
+                return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), List.of(new SimpleGrantedAuthority("buyer")));
+
+            if (roles.contains("seller") && userRole.contains("seller"))
+                return new org.springframework.security.core.userdetails.User(user.get().getEmail(), user.get().getPassword(), List.of(new SimpleGrantedAuthority("seller")));
+
+            throw new UsernameNotFoundException("Not found: " + username);
         }
 }
