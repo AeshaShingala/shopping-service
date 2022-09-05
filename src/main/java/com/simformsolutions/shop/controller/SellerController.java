@@ -2,7 +2,6 @@ package com.simformsolutions.shop.controller;
 
 import com.simformsolutions.shop.dto.ProductDetails;
 import com.simformsolutions.shop.dto.ProductsDetails;
-import com.simformsolutions.shop.dto.UserDetail;
 import com.simformsolutions.shop.entity.Colour;
 import com.simformsolutions.shop.entity.Product;
 import com.simformsolutions.shop.entity.Size;
@@ -40,26 +39,12 @@ public class SellerController {
     ProductService productService;
 
     @GetMapping("/home")
-    public String falseDashboard(Authentication authentication ){
-        return "redirect:/seller/" + sellerService.findSellerByEmail(authentication.getName()).getUserId();
-    }
-
-    @GetMapping("/{id}")
-    public ModelAndView showDashboard(@PathVariable("id") int sellerId) {
+    public ModelAndView showDashboard(Authentication authentication) {
+        User user = sellerService.findSellerByEmail(authentication.getName());
         ModelAndView mv = new ModelAndView("sellerDashboard");
-        mv.addObject("seller", sellerService.findSellerById(sellerId));
-        mv.addObject("listOfProducts", sellerService.findAllProductsBySellerId(sellerId));
+        mv.addObject("seller", user);
+        mv.addObject("listOfProducts", sellerService.findAllSellerProducts(user));
         return mv;
-    }
-
-    @GetMapping("/login")
-    public String login() {
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String loginSeller(@RequestParam("email") String email, @RequestParam("password") String password) {
-        return "redirect:/seller/" + sellerService.findSellerByEmail(email).getUserId();
     }
 
     @GetMapping("/profile/show/{id}")
@@ -99,7 +84,7 @@ public class SellerController {
     @PostMapping("/product/add/{id}")
     public String addProduct(@PathVariable("id") int sellerId, @ModelAttribute("ProductsDetails") ProductsDetails productDetails) throws IOException, CategoryNotFoundException {
         sellerService.saveSellingProduct(sellerId, productDetails.getProductDetailsList());
-        return "redirect:/seller/" + sellerId;
+        return "redirect:/seller/home";
     }
 
     @GetMapping("/product/show/{id}/{sid}")
@@ -116,7 +101,7 @@ public class SellerController {
     @GetMapping("/product/delete/{id}/{sid}")
     public String removeProduct(@PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException {
         productService.deleteProductById(productId);
-        return "redirect:/seller/" + sellerId;
+        return "redirect:/seller/home";
     }
 
     @GetMapping("/product/edit/{id}/{sid}")
@@ -138,6 +123,6 @@ public class SellerController {
     @PostMapping("/product/edit/{id}/{sid}")
     public String editProduct(@ModelAttribute("ProductDetails") ProductDetails productDetails, @PathVariable("id") int productId, @PathVariable("sid") int sellerId) throws ProductNotFoundException, IOException {
         productService.updateProduct(productId, productDetails);
-        return "redirect:/seller/" + sellerId;
+        return "redirect:/seller/home";
     }
 }

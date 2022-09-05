@@ -1,7 +1,6 @@
 package com.simformsolutions.shop.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString(exclude = {"roles"})
+@ToString
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class User {
 
@@ -27,6 +26,7 @@ public class User {
     private String address;
     @Column(length = 20)
     private String contact;
+    private boolean isEnabled = false;
 
 
     @ManyToMany(cascade = CascadeType.ALL)

@@ -1,6 +1,6 @@
 package com.simformsolutions.shop.controller;
 
-import com.simformsolutions.shop.dto.AuthRequest;
+import com.simformsolutions.shop.dto.AuthenticationRequest;
 import com.simformsolutions.shop.dto.UserDetail;
 import com.simformsolutions.shop.entity.User;
 import com.simformsolutions.shop.service.BuyerService;
@@ -48,7 +48,7 @@ public class LoginController {
     public String addBuyer(UserDetail userDetail) {
         User user = buyerService.saveBuyer(userDetail);
         buyerService.createWishlistAndCart(user);
-        return "dashboard";
+        return "redirect:/";
     }
 
     @GetMapping("/signup/seller")
@@ -59,7 +59,7 @@ public class LoginController {
     @PostMapping("/signup/seller")
     public String addSeller(UserDetail userDetail) {
         sellerService.saveSeller(userDetail);
-        return "dashboard";
+        return "redirect:/";
     }
 
     @GetMapping("/login/buyer")
@@ -68,14 +68,14 @@ public class LoginController {
     }
 
     @PostMapping("/login/buyer")
-    public void getBuyerPrincipal(@ModelAttribute AuthRequest authRequest, HttpServletResponse response) throws IOException {
-        Cookie cookie = CookieUtil.cookieMaker(authRequest.getEmail(), authRequest.getPassword(), authenticationManager, jwtUtil, customUserDetailsService);
+    public void getBuyerPrincipal(@ModelAttribute AuthenticationRequest authenticationRequest, HttpServletResponse response) throws IOException {
+        Cookie cookie = CookieUtil.cookieMaker(authenticationRequest.getEmail(), authenticationRequest.getPassword(), authenticationManager, jwtUtil, customUserDetailsService);
         if (cookie == null) {
             response.sendRedirect("/");
         } else {
             response.addCookie(cookie);
             System.out.println(cookie.getValue());
-            response.sendRedirect("/buyer/" + buyerService.findBuyerByEmail(authRequest.getEmail()).getUserId());
+            response.sendRedirect("/buyer/home");
         }
     }
 
@@ -85,14 +85,14 @@ public class LoginController {
     }
 
     @PostMapping("/login/seller")
-    public void getSellerPrincipal(@ModelAttribute AuthRequest authRequest, HttpServletResponse response) throws IOException {
-        Cookie cookie = CookieUtil.cookieMaker(authRequest.getEmail(), authRequest.getPassword(), authenticationManager, jwtUtil, customUserDetailsService);
+    public void getSellerPrincipal(@ModelAttribute AuthenticationRequest authenticationRequest, HttpServletResponse response) throws IOException {
+        Cookie cookie = CookieUtil.cookieMaker(authenticationRequest.getEmail(), authenticationRequest.getPassword(), authenticationManager, jwtUtil, customUserDetailsService);
         if (cookie == null) {
             response.sendRedirect("/");
         } else {
             response.addCookie(cookie);
             System.out.println(cookie.getValue());
-            response.sendRedirect("/seller/" + sellerService.findSellerByEmail(authRequest.getEmail()).getUserId());
+            response.sendRedirect("/seller/home");
         }
     }
 }

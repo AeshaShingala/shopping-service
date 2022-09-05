@@ -48,21 +48,11 @@ public class BuyerService {
     }
 
     public User saveBuyer(UserDetail userDetail) {
-        Optional<User> optionalUser= userRepository.findByEmail(userDetail.getEmail());
         Role role = roleRepository.findByName("buyer");
-
-        if(optionalUser.isEmpty()) {
-            userDetail.setPassword(new BCryptPasswordEncoder().encode(userDetail.getPassword()));
-            User user = userDetailsToUser(userDetail);
-            user.getRoles().add(role);
-            return userRepository.save(user);
-        }
-        else
-        {
-            if(!(optionalUser.get().getRoles().contains(role)))
-                optionalUser.get().getRoles().add(role);
-            return userRepository.save(optionalUser.get());
-        }
+        userDetail.setPassword(new BCryptPasswordEncoder().encode(userDetail.getPassword()));
+        User user = userDetailsToUser(userDetail);
+        user.getRoles().add(role);
+        return userRepository.save(user);
     }
 
     public User findBuyerById(int buyerId) {

@@ -1,3 +1,4 @@
+
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 
@@ -37,7 +38,7 @@
                 </a>
             </div>
             <div class="col-lg-9  text-right">
-                <a href="/buyer/${user.userId}" class="nav-item nav-link">Home</a>
+                <a href="/buyer/home" class="nav-item nav-link">Home</a>
             </div>
         </div>
     </div>

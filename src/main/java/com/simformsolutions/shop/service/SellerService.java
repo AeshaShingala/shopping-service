@@ -49,19 +49,12 @@ public class SellerService {
     }
 
     public void saveSeller(UserDetail userDetail) {
-        Optional<User> optionalUser = userRepository.findByEmail(userDetail.getEmail());
         Role role = roleRepository.findByName("seller");
+        userDetail.setPassword(new BCryptPasswordEncoder().encode(userDetail.getPassword()));
+        User user = userDetailsToUser(userDetail);
+        user.getRoles().add(role);
+        userRepository.save(user);
 
-        if (optionalUser.isEmpty()) {
-            userDetail.setPassword(new BCryptPasswordEncoder().encode(userDetail.getPassword()));
-            User user = userDetailsToUser(userDetail);
-            user.getRoles().add(role);
-            userRepository.save(user);
-        } else {
-            if (!(optionalUser.get().getRoles().contains(role)))
-                optionalUser.get().getRoles().add(role);
-            userRepository.save(optionalUser.get());
-        }
     }
 
     public User findSellerById(int id) {
@@ -117,12 +110,8 @@ public class SellerService {
         userRepository.save(user);
     }
 
-    public List<Product> findAllProductsBySellerId(int sellerId) {
-        Optional<User> user = userRepository.findById(sellerId);
-        if (user.isPresent()) {
-            return user.get().getProducts();
-        }
-        throw new UserNotFoundException(sellerId + "");
+    public List<Product> findAllSellerProducts(User user) {
+        return user.getProducts();
     }
 
     public Category findCategoryById(int id) throws CategoryNotFoundException {

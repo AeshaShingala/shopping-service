@@ -38,7 +38,7 @@
                 </a>
             </div>
             <div class="col-lg-9  text-right">
-                <a href="/seller/${seller.userId}" class="nav-item nav-link">Home</a>
+                <a href="/seller/home" class="nav-item nav-link">Home</a>
             </div>
         </div>
     </div>

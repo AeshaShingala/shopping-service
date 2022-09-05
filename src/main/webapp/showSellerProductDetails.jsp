@@ -37,7 +37,7 @@
                 </a>
             </div>
             <div class="col-lg-9  text-right">
-                <a href="/seller/${user.userId}" class="nav-item nav-link">Home</a>
+                <a href="/seller/home" class="nav-item nav-link">Home</a>
             </div>
         </div>
     </div>
@@ -49,7 +49,7 @@
         <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
             <h1 class="font-weight-semi-bold text-uppercase mb-3">PRODUCT DETAIL</h1>
             <div class="d-inline-flex">
-                <p class="m-0"><a href=" /seller/${user.userId}"></a>Home</p>
+                <p class="m-0"><a href=" /seller/home"></a>Home</p>
                 <p class="m-0 px-2">-</p>
                 <p class="m-0">Product Details</p>
             </div>

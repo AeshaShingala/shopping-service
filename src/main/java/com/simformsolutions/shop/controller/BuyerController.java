@@ -1,6 +1,5 @@
 package com.simformsolutions.shop.controller;
 
-import com.simformsolutions.shop.dto.UserDetail;
 import com.simformsolutions.shop.entity.CartProduct;
 import com.simformsolutions.shop.entity.Purchase;
 import com.simformsolutions.shop.entity.Size;
@@ -40,29 +39,14 @@ public class BuyerController {
     PurchaseService purchaseService;
 
     @GetMapping("/home")
-    public String falseDashboard(Authentication authentication ){
-        return "redirect:/buyer/" + buyerService.findBuyerByEmail(authentication.getName()).getUserId();
-    }
-
-    @GetMapping("/{id}")
-    public ModelAndView dashboard(@PathVariable("id") int buyerId) {
+    public ModelAndView dashboard(Authentication authentication) {
+        User user = buyerService.findBuyerByEmail(authentication.getName());
         return new ModelAndView("buyerDashboard")
-                .addObject("user", buyerService.findBuyerById(buyerId))
+                .addObject("user", user)
                 .addObject("listOfProducts", productService.findAllProducts())
                 .addObject("listOfCategories", categoryRepository.findAll())
-                .addObject("wishlistSize", buyerService.findBuyerById(buyerId).getWishlist().getWishlistProducts().size())
-                .addObject("cartSize", buyerService.findBuyerById(buyerId).getCart().getCartProducts().size());
-    }
-
-    @GetMapping("/login")
-    public String saveBuyer() {
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String saveBuyer(@RequestParam("email") String email, @RequestParam("password") String password) {
-        User user = buyerService.findBuyerByEmail(email);
-        return "redirect:/buyer/" + user.getUserId();
+                .addObject("wishlistSize", user.getWishlist().getWishlistProducts().size())
+                .addObject("cartSize", user.getCart().getCartProducts().size());
     }
 
     @GetMapping("/profile/show/{id}")
@@ -115,7 +99,7 @@ public class BuyerController {
     @GetMapping("/product/wishlist/{id}/{bid}")
     public String addProductToWishlist(@PathVariable("id") int productId, @PathVariable("bid") int buyerId) throws ProductNotFoundException {
         buyerService.saveProductInWishlist(productService.findProductById(productId), buyerId);
-        return "redirect:/buyer/" + buyerId;
+        return "redirect:/buyer/wishlist/" + buyerId;
     }
 
     @GetMapping("/wishlist/{bid}")

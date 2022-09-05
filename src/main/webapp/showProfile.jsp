@@ -34,7 +34,7 @@
                 </a>
             </div> 
             <div class="col-lg-9 text-right">
-                <a href="/${hasRole}/${user.userId}" class="nav-item nav-link">Home</a>
+                <a href="/${hasRole}/home" class="nav-item nav-link">Home</a>
             </div>
         </div>
     </div>
