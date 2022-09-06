@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"roles"})
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class User {
 
@@ -26,7 +26,7 @@ public class User {
     private String address;
     @Column(length = 20)
     private String contact;
-    private boolean isEnabled = false;
+    private boolean enable = false;
 
 
     @ManyToMany(cascade = CascadeType.ALL)

@@ -51,6 +51,7 @@ public class BuyerService {
         Role role = roleRepository.findByName("buyer");
         userDetail.setPassword(new BCryptPasswordEncoder().encode(userDetail.getPassword()));
         User user = userDetailsToUser(userDetail);
+        user.setEnable(true);
         user.getRoles().add(role);
         return userRepository.save(user);
     }
@@ -63,7 +64,7 @@ public class BuyerService {
     }
 
     public User findBuyerByEmail(String email) {
-        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent())
             return optionalUser.get();
         throw new UserNotFoundException(email);

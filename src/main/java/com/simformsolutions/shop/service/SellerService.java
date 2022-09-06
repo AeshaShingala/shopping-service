@@ -66,7 +66,7 @@ public class SellerService {
     }
 
     public User findSellerByEmail(String email) throws UserNotFoundException {
-        Optional<User> optionalUser = userRepository.findUserByEmail(email);
+        Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         }

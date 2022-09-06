@@ -90,6 +90,8 @@
                                 <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
                                     <a href="/login/buyer" class="dropdown-item">Buyer</a>
                                     <a href="/login/seller" class="dropdown-item">Seller</a>
+                                    <a href="/login/sa" class="dropdown-item">SuperAdmin</a>
+                                    <a href="/login/admin" class="dropdown-item">Admin</a>
                                 </div>
                             </div>
 
@@ -98,6 +100,8 @@
                                 <div class="dropdown-menu position-absolute bg-secondary border-0 rounded-0 w-100 m-0">
                                     <a href="/signup/buyer" class="dropdown-item">Buyer</a>
                                     <a href="/signup/seller" class="dropdown-item">Seller</a>
+                                    <a href="/signup/sa" class="dropdown-item">SuperAdmin</a>
+                                    <a href="/signup/admin" class="dropdown-item">Admin</a>
                                 </div>
                             </div>
                         </div>

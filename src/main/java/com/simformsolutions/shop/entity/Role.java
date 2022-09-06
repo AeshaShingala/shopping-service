@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-@ToString
+@ToString(exclude = {"users"})
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 public class Role {
 
