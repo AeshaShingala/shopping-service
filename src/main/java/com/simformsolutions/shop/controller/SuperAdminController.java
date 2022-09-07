@@ -5,6 +5,7 @@ import com.simformsolutions.shop.repository.UserRepository;
 import com.simformsolutions.shop.service.SellerService;
 import com.simformsolutions.shop.service.SuperAdminService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -23,12 +24,17 @@ public class SuperAdminController {
     SellerService sellerService;
 
 
-    @GetMapping("/home")
-    public ModelAndView dashboard(Authentication authentication) {
+    @GetMapping("/home/{pageNo}/{sortBy}")
+    public ModelAndView dashboard(@PathVariable("pageNo") int pageNo, @PathVariable("sortBy") String sortBy, Authentication authentication) {
         User user = superAdminService.findSuperAdminByEmail(authentication.getName());
+        Page<User> sellers = superAdminService.getAllSellers(pageNo, 2, sortBy);
         return new ModelAndView("superAdminDashboard")
                 .addObject("superadmin", user)
-                .addObject("listOfSellers", superAdminService.getAllSellers());
+                .addObject("listOfSellers", sellers.getContent())
+                .addObject("currentPage", pageNo)
+                .addObject("totalPages", sellers.getTotalPages())
+                .addObject("totalItems", sellers.getTotalElements())
+                .addObject("sort", sortBy);
     }
 
     @PostMapping("/status")
@@ -67,7 +73,7 @@ public class SuperAdminController {
     @GetMapping("/delete/{id}")
     public String removeSeller(@PathVariable("id") int userId) {
         superAdminService.deleteSeller(userId);
-        return "redirect:/super-admin/home";
+        return "redirect:/super-admin/home/1/userId";
     }
 
 }

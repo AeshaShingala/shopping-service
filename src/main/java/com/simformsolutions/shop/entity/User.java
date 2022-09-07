@@ -27,6 +27,7 @@ public class User {
     @Column(length = 20)
     private String contact;
     private boolean enable = false;
+    private boolean deleted = false;
 
 
     @ManyToMany(cascade = CascadeType.ALL)

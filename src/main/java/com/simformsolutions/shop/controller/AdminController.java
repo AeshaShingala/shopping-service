@@ -5,6 +5,7 @@ import com.simformsolutions.shop.repository.UserRepository;
 import com.simformsolutions.shop.service.AdminService;
 import com.simformsolutions.shop.service.SellerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -22,12 +23,17 @@ public class AdminController {
     @Autowired
     SellerService sellerService;
 
-    @GetMapping("/home")
-    public ModelAndView dashboard(Authentication authentication) {
+    @GetMapping("/home/{pageNo}/{sortBy}")
+    public ModelAndView dashboard(@PathVariable("pageNo") int pageNo, @PathVariable("sortBy") String sortBy, Authentication authentication) {
         User user = userRepository.findByEmail(authentication.getName()).get();
+        Page<User> sellers = adminService.getAllSellers(pageNo, 4, sortBy);
         return new ModelAndView("adminDashboard")
                 .addObject("admin", user)
-                .addObject("listOfSellers", adminService.getAllSellers());
+                .addObject("listOfSellers", sellers.getContent())
+                .addObject("currentPage", pageNo)
+                .addObject("totalPages", sellers.getTotalPages())
+                .addObject("totalItems", sellers.getTotalElements())
+                .addObject("sort", sortBy);
     }
 
     @PostMapping("/status")

@@ -1,3 +1,6 @@
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,6 +26,7 @@
 
     <!-- Customized Bootstrap Stylesheet -->
     <link href="/css/style.css" rel="stylesheet">
+	<link href="/css/login.css" rel="stylesheet">
 </head>
 
 <body>
@@ -46,38 +50,63 @@
 					<div class="card">
 						<div class="card-header">Login</div>
 						<div class="card-body">
-							<form name="my-form" action="" method="post">
+							<form name="my-form" action="/login/${role}" method="post">
+								
+								<c:if test= "${invalid == 1}">
+									<div class="alert alert-danger" role="alert">Invalid Credentials</div>
+								</c:if>
+
 								<div class="form-group row">
 									<label for="email"
 										class="col-md-4 col-form-label text-md-right">E-Mail
 										Address</label>
 									<div class="col-md-6">
-										<input required="required" type="email" id="email"
-											class="form-control" name="email">
+										<input required="required" type="email" id="email" class="form-control" name="email">
 									</div>
 								</div>
 								<div class="form-group row">
-									<label for="password"
-										class="col-md-4 col-form-label text-md-right">Password</label>
+									<label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
 									<div class="col-md-6">
-										<input required="required" type="password" id="password"
-											class="form-control" name="password">
+										<input required="required" type="password" id="password" class="form-control" name="password">
 									</div>
-								</div>		
+								</div>	
 								<div class="col-md-6 offset-md-4">
-									<button type="submit" class="btn btn-primary">Login</button>
+									<button type="submit" id="save" class="btn btn-primary">Login</button>
 								</div>
 							</form>
 						</div>
 					</div>
+						<div>
+							<a class="underlineHover row justify-content-center"
+								href="http://localhost:8080/signup/${role}">New Here? Sign Up</a>
+						</div>
 				</div>
 			</div>
 		</div>
 	</main>
-	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-	<script
-		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-	<script
-		src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
 
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- 
+	<script>
+		// $("#save").click( function() {
+		// 	var role = $("#role").val();
+		// 	console.log(role);
+
+			
+			
+		// 	$.ajax({
+        //         url: 'http://localhost:8080/login/' + role ,
+        //         type: 'POST',
+        //         data: formData,
+        //         processData:false,contentType:false,
+        //         success: function (result)
+		// 		{}
+
+		// 	});
+		// 	// swal( "Invalid User","Please try again", "warning")
+		// });
+	</script> -->
 </body>

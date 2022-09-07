@@ -8,10 +8,13 @@ import com.simformsolutions.shop.repository.RoleRepository;
 import com.simformsolutions.shop.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -55,9 +58,10 @@ public class SuperAdminService {
         throw new UserNotFoundException(email);
     }
 
-    public List<User> getAllSellers() {
+    public Page<User> getAllSellers(int pageNo, int pageSize, String sortBy) {
         Role role = roleRepository.findByName("seller");
-        return role.getUsers();
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize, Sort.by(sortBy));
+        return userRepository.findAllByRoles(role, pageable);
     }
 
     public User updateUser(User user) {
@@ -75,6 +79,7 @@ public class SuperAdminService {
         User user = sellerService.findSellerById(userId);
         user.getRoles().remove(role);
         role.getUsers().remove(user);
+        user.setDeleted(true);
         roleRepository.save(role);
         userRepository.save(user);
     }
